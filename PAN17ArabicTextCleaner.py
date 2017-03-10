@@ -27,12 +27,12 @@ from pySpeeches.cleaning.PySpeechesCleaner import *
 #
 # Regex for twitter quote
 #
-QUOTE_PATTERN = "(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)"
+QUOTE_PATTERN = "(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9_]+)"
 
 #
-# Portuguese Alphabet
+# Arabic Alphabet
 #
-PORTUGUESE_ALPHABET = "AaÀàÁáÂâÃãBbCcÇçDdEeÉéÈèÊêFfGgHhIiÍíÏïÎîJjKkLlMmNnOoÓóÔôÕõPpQqRrSsTtUuÚúÜüÛûVvWwXxYyZz?.!,;"
+ARABIC_ALPHABET = ":?.!,;ـﺍﺏﺒﺐﺑﺕﺖﺘﺗﺙﺚﺜﺛﺝﺞﺠﺟﺡﺢﺤﺣﺥﺨﺩﺫﺭﺯﺱﺵﺹﺽﻁﻅﻉﻍﻑﻕﻙﻝﻡﻥﻩﻭﻱءئإؤأ،؍‎‎؎‎؏‎؟‎٭۞‎۩‎۝﴾﴿ﷰ‎ﷱ‎ﷲﷳ‎ﷴﷵ‎ﷷ‎ﷶ‎ﷸ‎ﷹﷺﷻ‎﷼‎بتثجحخد‎ذر‎زس‎ش‎صضطظ‎عغف‎ق‎ك‎لمن‎‎‎ه‎وي‎آ‎ة‎ى؀ال ا؛AaBbCcÇçDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZzتُ.هْةٍرٌلٌ"
 
 
 # An Author
@@ -68,7 +68,7 @@ class PAN17ArabicTextCleaner(PySpeechesCleaner):
         """
         cleaned_text = ""
         for letter in text:
-            if letter in PORTUGUESE_ALPHABET or letter == " ":
+            if letter in ARABIC_ALPHABET or letter == " ":
                 cleaned_text += letter
         # end for
         return cleaned_text
@@ -81,14 +81,32 @@ class PAN17ArabicTextCleaner(PySpeechesCleaner):
         :param text: Text to clean.
         :return: Cleaned text.
         """
-        text = PyCleaningTool.remove_urls(text)                                 # Remove URls.
-        text = PAN17ArabicTextCleaner.remove_twitter_quotes(text)           # Remove Twitter quotes.
-        text = PyCleaningTool.remove_useless_characters(text)                   # Remove useless characters.
-        text = PyCleaningTool.inverse_dot_and_quote(text)                       # Inverse dot and quote.
-        text = PyCleaningTool.replace_sharp_hashtag(text)                       # Remove hash tags.
-        text = PyCleaningTool.insert_space_between_special_word(text)           # Insert space between special words.
-        text = PyCleaningTool.space_between_each_word(text)                     # We want a space between each words.
-        text = PAN17ArabicTextCleaner.keep_only_letters(text)               # Keep only Portuguese letters.
+        # Clean twitter
+        text = PyCleaningTool.remove_urls(text)  # Remove URls.
+        text = PAN17ArabicTextCleaner.remove_twitter_quotes(text)  # Remove Twitter quotes.
+
+        # Clean numbers
+        text = text.replace(u"#", u"")  # No #
+        text = text.replace(u"$", u"")  # No $
+        text = text.replace(u"§", u"")  # No §
+        text = PyCleaningTool.format_numbers(text)  # 100'000 to 100000
+
+        # Punctuations
+        text = text.replace(u"?", u"? ")  # ???? to ? ? ? ?
+        text = text.replace(u"!", u"! ")  # !!!! to ! ! ! !
+        text = text.replace(u".", u" . ")  # .... to . . . .
+        text = text.replace(u"…", u" . . . ")  # ... to . . .
+        text = text.replace(u"\n", u" ")  # New line to space
+        text = text.replace(u"'", u" ")  # Replace ' by space
+        text = text.replace(u"’", u" ")  # Replace ’ by space
+
+        # Characters and spaces
+        text = PyCleaningTool.remove_useless_characters(text)  # Remove useless characters.
+        text = PyCleaningTool.inverse_dot_and_quote(text)  # Inverse dot and quote.
+        text = PyCleaningTool.remove_sharp_hash_tag(text)  # Remove hash tags.
+        text = PyCleaningTool.insert_space_between_special_word(text)  # Insert space between special words.
+        text = PyCleaningTool.space_between_each_word(text)  # We want a space between each words.
+        text = PAN17ArabicTextCleaner.keep_only_letters(text)  # Keep only Portuguese letters.
         text = PyCleaningTool.many_spaces_to_one_space(text)  # No multiple spaces
         text = text.strip()  # No space at the beginning or at the end of the tweet.
         return text

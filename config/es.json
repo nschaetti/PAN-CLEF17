@@ -1,0 +1,13 @@
+{
+  "sources": [
+    {
+      "type": "directory",
+      "name": "PAN17 Spanish Corpus",
+      "description": "Import PAN17 Spanish Corpus",
+      "entry_point": "/home/schaetti/Projets/TURING/Datasets/PAN17/AuthorProfiling/pan17-author-profiling-training-dataset-2017-02-22/es",
+      "file_regex": "[0-9a-zA-Z]+\\.xml",
+      "text_cleaner" : "PAN17SpanishTextCleaner",
+      "dict_size" : 30000
+    }
+  ]
+}
