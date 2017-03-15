@@ -35,7 +35,7 @@ if __name__ == "__main__":
         # Reducer
         reducer = PAN17LetterGramsReducer(
             letters="AaÀàÁáÂâÃãBbCcÇçDdEeÉéÈèÊêFfGgHhIiÍíÏïÎîJjKkLlMmNnOoÓóÔôÕõPpQqRrSsTtUuÚúÜüÛûVvWwXxYyZz",
-            punctuations="?.!,;:#$§", add_punctuation=True, add_first_letters=True)
+            punctuations="?.!,;:#$§", add_punctuation=True, add_first_letters=True, add_end_letter=True, add_end_grams=True)
 
         # Maps the document
         print(doc.map(reducer))

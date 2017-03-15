@@ -123,6 +123,55 @@ class PAN17LetterGramsReducer(PySpeechesMapReducer):
         return result
     # end map_first_letters
 
+    # Map end letters
+    def map_end_letters(self, doc):
+        """
+        Map end letters.
+        :param doc: The document to maps.
+        :return: Maps of the end letters.
+        """
+        result = dict()
+        for token in doc:
+            token = token.lower()
+            if len(token) > 1 or token[-1] not in self._punctuations:
+                if token[-1] not in result:
+                    result[token[-1]] = 1
+                else:
+                    result[token[-1]] += 1
+                # end if
+            # end if
+        # end for
+        return result
+    # end map_end_letters
+
+    # Map end grams
+    def map_end_grams(self, doc):
+        """
+
+        :param doc:
+        :return:
+        """
+        result = dict()
+        gram = ""
+        for token in doc:
+            token = token.lower()
+            if len(token) == 1 and token[0] not in self._punctuations:
+                gram = token[0]
+            elif len(token) > 1:
+                gram = token[-2] + token[-1]
+            # end if
+            if gram != "":
+                print(gram)
+                if gram not in result:
+                    result[gram] = 1
+                else:
+                    result[gram] += 1
+                # end if
+            # end if
+        # end for
+        return result
+    # end map_end_grams
+
     # Map the document
     def map(self, doc):
         """
@@ -144,6 +193,18 @@ class PAN17LetterGramsReducer(PySpeechesMapReducer):
         if self._add_first_letters:
             result['first_letters'] = self.map_first_letters(doc)
         # end if
+
+        # End letter
+        if self._add_end_letter:
+            result['end_letters'] = self.map_end_letters(doc)
+        # end if
+
+        # End grams
+        if self._add_end_grams:
+            result['end_grams'] = self.map_end_grams(doc)
+        # end if
+
+        # End grams
 
         return result
     # end map
