@@ -29,7 +29,7 @@ class PAN17LetterGramsReducer(PySpeechesMapReducer):
     # Constructor
     def __init__(self, letters="abcdefghijflmnopqrstuvwxyz", punctuations=".,;:!?", n_gram=2, add_upper_case=False,
                  add_punctuation=False, add_end_letter=False, add_end_grams=False, add_first_letters=False,
-                 add_begin_gram=False):
+                 add_first_grams=False):
         super(PAN17LetterGramsReducer, self).__init__()
         self._letters = letters
         self._punctuations = punctuations
@@ -39,7 +39,7 @@ class PAN17LetterGramsReducer(PySpeechesMapReducer):
         self._add_end_letter = add_end_letter
         self._add_end_grams = add_end_grams
         self._add_first_letters = add_first_letters
-        self._add_begin_gram = add_begin_gram
+        self._add_first_grams = add_first_grams
     # end
 
     # Get token grams
@@ -123,6 +123,33 @@ class PAN17LetterGramsReducer(PySpeechesMapReducer):
         return result
     # end map_first_letters
 
+    # Map first grams
+    def map_first_grams(self, doc):
+        """
+        Map first grams
+        :param doc: The document to map.
+        :return: The map
+        """
+        result = dict()
+        gram = ""
+        for token in doc:
+            token = token.lower()
+            if len(token) == 1 and token[0] not in self._punctuations:
+                gram = token[0]
+            elif len(token) > 1:
+                gram = token[0] + token[1]
+            # end if
+            if gram != "":
+                if gram not in result:
+                    result[gram] = 1
+                else:
+                    result[gram] += 1
+                # end if
+            # end if
+        # end for
+        return result
+    # end map_first_grams
+
     # Map end letters
     def map_end_letters(self, doc):
         """
@@ -161,7 +188,6 @@ class PAN17LetterGramsReducer(PySpeechesMapReducer):
                 gram = token[-2] + token[-1]
             # end if
             if gram != "":
-                print(gram)
                 if gram not in result:
                     result[gram] = 1
                 else:
@@ -192,6 +218,11 @@ class PAN17LetterGramsReducer(PySpeechesMapReducer):
         # First letter
         if self._add_first_letters:
             result['first_letters'] = self.map_first_letters(doc)
+        # end if
+
+        # First grams
+        if self._add_first_grams:
+            result['first_grams'] = self.map_first_grams(doc)
         # end if
 
         # End letter
