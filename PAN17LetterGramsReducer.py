@@ -27,35 +27,37 @@ from pySpeeches.mapreduce.PySpeechesMapReducer import *
 class PAN17LetterGramsReducer(PySpeechesMapReducer):
 
     # Constructor
-    def __init__(self, letters="abcdefghijflmnopqrstuvwxyz", punctuations=".,;:!?", n_gram=2, add_upper_case=False,
-                 add_punctuation=False, add_end_letter=False, add_end_grams=False, add_first_letters=False,
-                 add_first_grams=False):
+    def __init__(self, letters="abcdefghijflmnopqrstuvwxyz", punctuations=".,;:!?", n_gram=2,
+                 add_punctuation=False, add_end_letters=False, add_end_grams=False, add_first_letters=False,
+                 add_first_grams=False, upper_case=False):
         super(PAN17LetterGramsReducer, self).__init__()
         self._letters = letters
         self._punctuations = punctuations
         self._n_gram = n_gram
-        self._add_upper_case = add_upper_case
         self._add_punctuation = add_punctuation
-        self._add_end_letter = add_end_letter
+        self._add_end_letter = add_end_letters
         self._add_end_grams = add_end_grams
         self._add_first_letters = add_first_letters
         self._add_first_grams = add_first_grams
+        self._upper_case = upper_case
     # end
 
     # Get token grams
     def get_token_grams(self, token):
         result = dict()
-        low_token = token.lower()
-        if len(low_token) > 1:
-            for i in np.arange(1, len(low_token)):
-                if low_token[i-1:i+1] not in result:
-                    result[low_token[i-1:i+1]] = 1
+        if not self._upper_case:
+            token = token.lower()
+        # end if
+        if len(token) > 1:
+            for i in np.arange(1, len(token)):
+                if token[i-1:i+1] not in result:
+                    result[token[i-1:i+1]] = 1
                 else:
-                    result[low_token[i - 1:i + 1]] += 1
+                    result[token[i - 1:i + 1]] += 1
                 # end if
             # end for
-        elif low_token[0] in self._letters:
-            result[low_token[0]] = 1
+        elif token[0] in self._letters or token[0] in self._letters.upper():
+            result[token[0]] = 1
         # end if
         return result
     # end get_token_grams
@@ -105,13 +107,15 @@ class PAN17LetterGramsReducer(PySpeechesMapReducer):
     # Map first letters
     def map_first_letters(self, doc):
         """
-
+        Map first letters
         :param doc:
         :return:
         """
         result = dict()
         for token in doc:
-            #token = token.lower()
+            if not self._upper_case:
+                token = token.lower()
+            # end if
             if len(token) > 1 or token[0] not in self._punctuations:
                 if token[0] not in result:
                     result[token[0]] = 1
@@ -133,7 +137,9 @@ class PAN17LetterGramsReducer(PySpeechesMapReducer):
         result = dict()
         gram = ""
         for token in doc:
-            token = token.lower()
+            if not self._upper_case:
+                token = token.lower()
+            # end if
             if len(token) == 1 and token[0] not in self._punctuations:
                 gram = token[0]
             elif len(token) > 1:
@@ -159,7 +165,9 @@ class PAN17LetterGramsReducer(PySpeechesMapReducer):
         """
         result = dict()
         for token in doc:
-            token = token.lower()
+            if not self._upper_case:
+                token = token.lower()
+            # end if
             if len(token) > 1 or token[-1] not in self._punctuations:
                 if token[-1] not in result:
                     result[token[-1]] = 1
@@ -181,7 +189,9 @@ class PAN17LetterGramsReducer(PySpeechesMapReducer):
         result = dict()
         gram = ""
         for token in doc:
-            token = token.lower()
+            if not self._upper_case:
+                token = token.lower()
+            # end if
             if len(token) == 1 and token[0] not in self._punctuations:
                 gram = token[0]
             elif len(token) > 1:
@@ -235,14 +245,56 @@ class PAN17LetterGramsReducer(PySpeechesMapReducer):
             result['end_grams'] = self.map_end_grams(doc)
         # end if
 
-        # End grams
-
         return result
     # end map
 
+    # Merge two mapping
+    def _merge_mappings(self, map1, map2):
+        result = dict()
+        for key in map1:
+            if key in map2:
+                result[key] = map1[key] + map2[key]
+            else:
+                result[key] = map1[key]
+            # end if
+        # end for
+        for key in map2:
+            if key not in map1:
+                result[key] = map2[key]
+            # end if
+        # end for
+        return result
+    # end _merge_mappings
+
+    # Merge two mapping
+    def _merge_two_mappings(self, map1, map2):
+        if len(map1) == 0:
+            return map2
+        # end if
+        if len(map2) == 0:
+            return map1
+        # end if
+
+        # Result
+        result = dict()
+
+        # For reach key
+        for key in map1:
+            if key in map2.keys():
+                result[key] = self._merge_mappings(map1[key], map2[key])
+            # end if
+        # end for
+        return result
+    # end _merge_two_mappings
+
     # Reduce the data
-    def reduce(self, data_list):
-        pass
+    def reduce(self, mapping_list):
+        final_mapping = dict()
+        # For each mapping
+        for mapping in mapping_list:
+            final_mapping = self._merge_two_mappings(final_mapping, mapping)
+        # end for
+        return final_mapping
     # end reduce
 
 # end PAN17LetterGramsReducer

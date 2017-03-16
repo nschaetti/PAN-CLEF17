@@ -33,6 +33,7 @@ QUOTE_PATTERN = "(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9_]+)"
 # English Alphabet
 #
 ENGLISH_ALPHABET = "AaÀàÁáÂâÃãBbCcÇçDdEeÉéÈèÊêFfGgHhIiÍíÏïÎîJjKkLlMmNnOoÓóÔôÕõPpQqRrSsTtUuÚúÜüÛûVvWwXxYyZz?.!,;:#$§"
+ENGLISH_PUNCTUATIONS = "?.!,;:"
 
 
 # An Author
@@ -50,7 +51,7 @@ class PAN17EnglishTextCleaner(PySpeechesCleaner):
     @staticmethod
     def remove_twitter_quotes(text):
         """
-        Remove Twitter quotes
+        Remove Twitter quotes?.!,;:#$§
         :param text: Text to clean.
         :return: Cleaned text.
         """
@@ -92,13 +93,17 @@ class PAN17EnglishTextCleaner(PySpeechesCleaner):
         text = PyCleaningTool.format_numbers(text)                              # 100'000 to 100000
 
         # Punctuations
-        text = text.replace(u"?",  u"? ")                                       # ???? to ? ? ? ?
-        text = text.replace(u"!",  u"! ")                                       # !!!! to ! ! ! !
-        text = text.replace(u".",  u". ")                                       # .... to . . . .
+        text = text.replace(u"?",  u" ? ")                                       # ???? to ? ? ? ?
+        text = text.replace(u"!",  u" ! ")                                       # !!!! to ! ! ! !
+        text = text.replace(u".",  u" . ")                                       # .... to . . . .
+        text = text.replace(u",", u" , ")                                       # ,, to ,
         text = text.replace(u"…",  u" . . . ")                                  # ... to . . .
         text = text.replace(u"\n", u" ")                                        # New line to space
         text = text.replace(u"'",  u" ")                                        # Replace ' by space
         text = text.replace(u"’",  u" ")                                        # Replace ’ by space
+        for p in ENGLISH_PUNCTUATIONS:
+            text = text.replace(p,  u" " + p + u" ")
+        # end for
 
         # Characters and spaces
         text = PyCleaningTool.remove_useless_characters(text)                   # Remove useless characters.
