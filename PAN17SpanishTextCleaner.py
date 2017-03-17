@@ -32,7 +32,8 @@ QUOTE_PATTERN = "(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9_]+)"
 #
 # Spanish Alphabet
 #
-SPANISH_ALPHABET = "AaÀàÁáÂâÃãBbCcÇçDdEeÉéÈèÊêFfGgHhIiÍíÏïÎîJjKkLlMmNnÑñOoÓóÔôÕõPpQqRrSsTtUuÚúÜüÛûVvWwXxYyZz?¿.!¡,;:"
+SPANISH_ALPHABET = u"AaÀàÁáÂâÃãBbCcÇçDdEeÉéÈèÊêFfGgHhIiÍíÏïÎîJjKkLlMmNnÑñOoÓóÔôÕõPpQqRrSsTtUuÚúÜüÛûVvWwXxYyZz?¿.!¡,;:"
+SPANISH_PUNCTUATIONS = u"?¿.!¡,;:"
 
 
 # An Author
@@ -92,15 +93,19 @@ class PAN17SpanishTextCleaner(PySpeechesCleaner):
         text = PyCleaningTool.format_numbers(text)  # 100'000 to 100000
 
         # Punctuations
-        text = text.replace(u"?", u"? ")  # ???? to ? ? ? ?
-        text = text.replace(u"¿", u"¿ ")  # ¿¿¿¿ to ¿ ¿ ¿ ¿
-        text = text.replace(u"!", u"! ")  # !!!! to ! ! ! !
-        text = text.replace(u"¡", u"¡ ")  # ¡¡¡¡ to ¡ ¡ ¡ ¡
-        text = text.replace(u".", u". ")  # .... to . . . .
+        text = text.replace(u"?", u" ? ")  # ???? to ? ? ? ?
+        text = text.replace(u"¿", u" ¿ ")  # ¿¿¿¿ to ¿ ¿ ¿ ¿
+        text = text.replace(u"!", u" ! ")  # !!!! to ! ! ! !
+        text = text.replace(u"¡", u" ¡ ")  # ¡¡¡¡ to ¡ ¡ ¡ ¡
+        text = text.replace(u".", u" . ")  # .... to . . . .
+        text = text.replace(u",", u" , ")
         text = text.replace(u"…", u" . . . ")  # ... to . . .
         text = text.replace(u"\n", u" ")  # New line to space
         text = text.replace(u"'", u" ")  # Replace ' by space
         text = text.replace(u"’", u" ")  # Replace ’ by space
+        for p in SPANISH_PUNCTUATIONS:
+            text = text.replace(p,  u" " + p + u" ")
+        # end for
 
         # Characters and spaces
         text = PyCleaningTool.remove_useless_characters(text)  # Remove useless characters.

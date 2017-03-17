@@ -21,6 +21,7 @@
 
 # Import packages
 import numpy as np
+from scipy.sparse import csr_matrix
 import matplotlib.pyplot as plt
 
 
@@ -113,7 +114,7 @@ class PAN17FeaturesMatrixGenerator(object):
         return pos
     # end
 
-    # Dictionnary sum
+    # Dictionary sum
     def _dict_sum(self, dictionary):
         count = 0.0
         for key in dictionary.keys():
@@ -196,7 +197,10 @@ class PAN17FeaturesMatrixGenerator(object):
             a = self._punctuations.index(p)
             features_matrix[a + 2, col_pos] = count / divisor
         # end for
-        features_matrix /= maxi
+        if maxi != 0:
+            features_matrix /= maxi
+        # end if
+        # end try
         return features_matrix
     # end _generate_punctuations_data
 
@@ -206,7 +210,7 @@ class PAN17FeaturesMatrixGenerator(object):
         n_row, n_col = self._compute_matrix_dimension(features_mapping)
 
         # Matrix
-        features_matrix = np.zeros((n_row, n_col))
+        features_matrix = csr_matrix((n_row, n_col))
 
         # Generate grams data
         if 'grams' in features_mapping:

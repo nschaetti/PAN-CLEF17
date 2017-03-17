@@ -32,7 +32,8 @@ QUOTE_PATTERN = "(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9_]+)"
 #
 # Arabic Alphabet
 #
-ARABIC_ALPHABET = ":?.!,;ـﺍﺏﺒﺐﺑﺕﺖﺘﺗﺙﺚﺜﺛﺝﺞﺠﺟﺡﺢﺤﺣﺥﺨﺩﺫﺭﺯﺱﺵﺹﺽﻁﻅﻉﻍﻑﻕﻙﻝﻡﻥﻩﻭﻱءئإؤأ،؍‎‎؎‎؏‎؟‎٭۞‎۩‎۝﴾﴿ﷰ‎ﷱ‎ﷲﷳ‎ﷴﷵ‎ﷷ‎ﷶ‎ﷸ‎ﷹﷺﷻ‎﷼‎بتثجحخد‎ذر‎زس‎ش‎صضطظ‎عغف‎ق‎ك‎لمن‎‎‎ه‎وي‎آ‎ة‎ى؀ال ا؛AaBbCcÇçDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZzتُ.هْةٍرٌلٌ"
+ARABIC_ALPHABET = u":?؟‎.!,;ـﺍﺏﺒﺐﺑﺕﺖﺘﺗﺙﺚﺜﺛﺝﺞﺠﺟﺡﺢﺤﺣﺥﺨﺩﺫﺭﺯﺱﺵﺹﺽﻁﻅﻉﻍﻑﻕﻙﻝﻡﻥﻩﻭﻱءئإؤأ،؍‎‎؎‎؏‎‎٭۞‎۩‎۝﴾﴿ﷰ‎ﷱ‎ﷲﷳ‎ﷴﷵ‎ﷷ‎ﷶ‎ﷸ‎ﷹﷺﷻ‎﷼‎بتثجحخد‎ذر‎زس‎ش‎صضطظ‎عغف‎ق‎ك‎لمن‎‎‎ه‎وي‎آ‎ة‎ى؀ال ا؛AaBbCcÇçDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZzتُهْةٍرٌلٌ"
+ARABIC_PUNCTUATIONS = u":?؟‎.!,;،؍"
 
 
 # An Author
@@ -95,10 +96,14 @@ class PAN17ArabicTextCleaner(PySpeechesCleaner):
         text = text.replace(u"?", u"? ")  # ???? to ? ? ? ?
         text = text.replace(u"!", u"! ")  # !!!! to ! ! ! !
         text = text.replace(u".", u" . ")  # .... to . . . .
+        text = text.replace(u",", u" , ")  # ,, to ,
         text = text.replace(u"…", u" . . . ")  # ... to . . .
         text = text.replace(u"\n", u" ")  # New line to space
         text = text.replace(u"'", u" ")  # Replace ' by space
         text = text.replace(u"’", u" ")  # Replace ’ by space
+        for p in ARABIC_PUNCTUATIONS:
+            text = text.replace(p,  u" " + p + u" ")
+        # end for
 
         # Characters and spaces
         text = PyCleaningTool.remove_useless_characters(text)  # Remove useless characters.

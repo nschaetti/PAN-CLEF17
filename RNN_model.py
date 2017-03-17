@@ -7,11 +7,11 @@
 
 # Import packages
 import argparse
-import matplotlib.pyplot as plt
 import pySpeeches as ps
+import numpy as np
 from PAN17TruthLoader import PAN17TruthLoader
 from PAN17LetterGramsReducer import PAN17LetterGramsReducer
-from PAN17FeaturesMatrixGenerator import PAN17FeaturesMatrixGenerator
+from PAN17DiscreteSymbolGenerator import PAN17DiscreteSymbolGenerator
 import cPickle as pickle
 
 # ALPHABETS
@@ -31,66 +31,35 @@ ARABIC_PUNCTUATIONS = u":?؟‎.!,;،؍"
 if __name__ == "__main__":
 
     # Argument parser
-    parser = argparse.ArgumentParser(description="PAN17 data set creator")
+    parser = argparse.ArgumentParser(description="PAN17 RNN model")
 
     # Argument
     parser.add_argument("--file", type=str, help="Input data set Pickle file", default="pan17clef.p")
-    parser.add_argument("--output", type=str, help="Output Pickle file", default="output.p")
     parser.add_argument("--upper", dest="upper", action="store_true", help="Case sensitive")
     parser.set_defaults(upper=False)
     args = parser.parse_args()
 
-    # Result
-    result = dict()
-    result['2grams'] = []
-    result['labels'] = []
+    # Letter to symbol
+    discrete_generator = PAN17DiscreteSymbolGenerator(alphabet=ENGLISH_ALPHABET + ENGLISH_PUNCTUATIONS + " ")
 
     # Load data set
-    final_mapping = dict()
     with open(args.file, 'r') as f:
         # Load
         data_set = pickle.load(f)
 
-        # Reducer
-        reducer = PAN17LetterGramsReducer(
-            letters=ARABIC_ALPHABET,
-            punctuations=ARABIC_PUNCTUATIONS, add_punctuation=True, add_first_letters=True, add_end_letters=True,
-            add_end_grams=True, add_first_grams=True, upper_case=args.upper)
-
-        # Matrix generator
-        matrix_generator = PAN17FeaturesMatrixGenerator(letters=ARABIC_ALPHABET,
-                                              punctuations=ARABIC_PUNCTUATIONS, upper_case=args.upper)
-
         # For each author
         for author in data_set['corpus'].get_authors():
-            print("Generating feature matrix for author %s" % author.get_name())
             # For each document
-            author_mapping = dict()
+            symbol_input = np.array([])
             for doc in author.get_documents():
-                # Maps the document
-                doc_mapping = doc.map(reducer)
-                # Reduce
-                author_mapping = reducer.reduce([author_mapping, doc_mapping])
+                doc_symbols = np.array(discrete_generator.tokens_to_symbols(doc.get_tokens()))
+                #symbol_input = np.vstack((symbol_input, discrete_generator.tokens_to_symbols(doc.get_tokens())))
+                print(doc_symbols.shape)
             # end for
-
-            # Generate author matrix
-            author_matrix = matrix_generator.generate_matrix(author_mapping)
-
-            # Add to training
-            result['2grams'] += [author_matrix]
-            #print(author.get_property("gender") + " " + author.get_property("language"))
-            # Labels
-            result['labels'] += [(author.get_property("gender"), author.get_property("language"))]
-
-            #plt.imshow(author_matrix, cmap='gray')
-            #plt.show()
+            print(symbol_input)
+            print(symbol_input.shape)
+            exit()
         # end for
-    # end with
-
-    # Save
-    print("Saving file %s" % args.output)
-    with open(args.output, 'w') as f:
-        pickle.dump(result, f)
     # end with
 
 # end if

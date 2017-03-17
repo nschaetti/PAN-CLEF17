@@ -32,7 +32,8 @@ QUOTE_PATTERN = "(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9_]+)"
 #
 # Portuguese Alphabet
 #
-PORTUGUESE_ALPHABET = "AaÀàÁáÂâÃãBbCcÇçDdEeÉéÈèÊêFfGgHhIiÍíÏïÎîJjKkLlMmNnOoÓóÔôÕõPpQqRrSsTtUuÚúÜüÛûVvWwXxYyZz?.!,;:#$§"
+PORTUGUESE_ALPHABET = u"AaÀàÁáÂâÃãBbCcÇçDdEeÉéÈèÊêFfGgHhIiÍíÏïÎîJjKkLlMmNnOoÓóÔôÕõPpQqRrSsTtUuÚúÜüÛûVvWwXxYyZz?.!,;:#$§"
+PORTUGUESE_PUNCTUATIONS = u"?.!,;:"
 
 
 # An Author
@@ -95,10 +96,14 @@ class PAN17PortugueseTextCleaner(PySpeechesCleaner):
         text = text.replace(u"?", u"? ")  # ???? to ? ? ? ?
         text = text.replace(u"!", u"! ")  # !!!! to ! ! ! !
         text = text.replace(u".", u". ")  # .... to . . . .
+        text = text.replace(u",", u" , ")  # ,, to ,
         text = text.replace(u"…", u" . . . ")  # ... to . . .
         text = text.replace(u"\n", u" ")  # New line to space
         text = text.replace(u"'", u" ")  # Replace ' by space
         text = text.replace(u"’", u" ")  # Replace ’ by space
+        for p in PORTUGUESE_PUNCTUATIONS:
+            text = text.replace(p,  u" " + p + u" ")
+        # end for
 
         # Characters and spaces
         text = PyCleaningTool.remove_useless_characters(text)                   # Remove useless characters.
