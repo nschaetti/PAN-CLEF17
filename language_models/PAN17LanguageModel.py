@@ -142,15 +142,20 @@ class PAN17LanguageModel(PAN17Classifier):
                 token = token.lower()
             # end if
             token_prob = self.word_probability(token)
+            """print("P : " + str(token_prob))
+            print("C : " + str(self._collection_counts[token]))
+            print("L : " + str(len(tokens)))"""
             if self._collection_counts[token] != 0:
                 for c in prob.keys():
                     if self._smoothing is not None:
-                        prob[c] *= Decimal(self._smoothing.smooth(token_prob[c], self._collection_counts[token]))
+                        prob[c] *= Decimal(self._smoothing.smooth(token_prob[c], self._collection_counts[token],
+                                                                  len(tokens)))
                     else:
                         prob[c] *= Decimal(token_prob[c])
                     # end if
                 # end for
             # end if
+            #print("R : " + str(prob))
         # end for
         # Get max prob
         max_prob = Decimal(0.0)
@@ -161,6 +166,8 @@ class PAN17LanguageModel(PAN17Classifier):
                 max_prob = prob[c]
             # end if
         # end for
+        #print("F : " + str(prob))
+        #exit()
         return winner
     # end evaluate_doc
 

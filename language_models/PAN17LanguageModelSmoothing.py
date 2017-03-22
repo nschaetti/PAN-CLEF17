@@ -27,7 +27,7 @@ class PAN17LanguageModelSmoothing(object):
     # end __init__
 
     # Smooth function
-    def smooth(self, doc_prob, col_prob):
+    def smooth(self, doc_prob, col_prob, doc_length):
         pass
     # end smooth
 

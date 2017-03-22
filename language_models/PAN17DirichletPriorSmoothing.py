@@ -22,17 +22,18 @@
 from PAN17LanguageModelSmoothing import PAN17LanguageModelSmoothing
 
 
-class PAN17JelinekMercerSmoothing(PAN17LanguageModelSmoothing):
+class PAN17DirichletPriorSmoothing(PAN17LanguageModelSmoothing):
 
     # Constructor
-    def __init__(self, l):
-        super(PAN17JelinekMercerSmoothing, self).__init__()
-        self._lambda = l
+    def __init__(self, mu):
+        super(PAN17DirichletPriorSmoothing, self).__init__()
+        self._mu = mu
     # end __init__
 
     # Smooth function
     def smooth(self, doc_prob, col_prob, doc_length):
-        return (1.0 - self._lambda) * doc_prob + self._lambda * col_prob
+        return (float(doc_length) / (float(doc_length) + float(self._mu))) * doc_prob + \
+               (float(self._mu) / (float(self._mu) + float(doc_length))) * col_prob
     # end smooth
 
-# end PAN17JelinekMercerSmoothing
+# end PAN17DirichletPriorSmoothing

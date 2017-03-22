@@ -11,6 +11,7 @@ import numpy as np
 import math
 from language_models.PAN17LanguageModel import PAN17LanguageModel
 from language_models.PAN17JelinekMercerSmoothing import PAN17JelinekMercerSmoothing
+from language_models.PAN17DirichletPriorSmoothing import PAN17DirichletPriorSmoothing
 from tools.PAN17Metrics import PAN17Metrics
 import cPickle as pickle
 
@@ -43,64 +44,71 @@ if __name__ == "__main__":
         n_samples = len(data_set['authors'])
         fold_size = int(math.ceil(n_samples/10.0))
 
-        # Probabilistic model
-        language_model = PAN17LanguageModel(classes=data_set['genders'], upper=False)
-        language_model.set_smoothing(PAN17JelinekMercerSmoothing(l=0.1))
+        # For a range of l
+        #for l in np.arange(0.0001, 1.01, 0.05):
+        for l in np.arange(50, 4001, 200):
+            #print("Evaluating lambda = %f" % l)
+            print("Evaluating mu = %f" % l)
+            # Probabilistic model
+            language_model = PAN17LanguageModel(classes=data_set['genders'], upper=False)
+            #language_model.set_smoothing(PAN17JelinekMercerSmoothing(l=l))
+            language_model.set_smoothing(PAN17DirichletPriorSmoothing(mu=l))
 
-        # K-10 fold
-        author_sets = np.array(data_set['authors'])
-        author_sets.shape = (10, fold_size)
+            # K-10 fold
+            author_sets = np.array(data_set['authors'])
+            author_sets.shape = (10, fold_size)
 
-        # For each fold
-        error_rate_average = np.array([])
-        for i in range(10):
-            print("Error rate evaluation for K fold %d" % i)
+            # For each fold
+            error_rate_average = np.array([])
+            for i in range(10):
+                #print("Error rate evaluation for K fold %d" % i)
 
-            # Initialize model
-            for doc in data_set['corpus'].get_documents():
-                for token in doc.get_tokens():
-                    language_model.init_token_count(token)
-                # end for
-            # end for
-
-            # Select training and test sets
-            test = author_sets[i]
-            training = np.delete(author_sets, i, axis=0)
-            training.shape = (fold_size * 9)
-
-            # For each author in training
-            for author in training:
-                gender = author.get_property("gender")
-                # For each doc
-                for doc in author.get_documents():
-                    # For each tokens
+                # Initialize model
+                for doc in data_set['corpus'].get_documents():
                     for token in doc.get_tokens():
-                        language_model.inc_word(gender, token, 1.0)
+                        language_model.init_token_count(token)
                     # end for
                 # end for
-            # end for
 
-            # Finalize model
-            language_model.finalize_model()
+                # Select training and test sets
+                test = author_sets[i]
+                training = np.delete(author_sets, i, axis=0)
+                training.shape = (fold_size * 9)
 
-            # Create author profile
-            docs_token = []
-            truths = []
-            for author in test:
-                author_tokens = []
-                for doc in author.get_documents():
-                    author_tokens += doc.get_tokens()
+                # For each author in training
+                for author in training:
+                    gender = author.get_property("gender")
+                    # For each doc
+                    for doc in author.get_documents():
+                        # For each tokens
+                        for token in doc.get_tokens():
+                            language_model.inc_word(gender, token, 1.0)
+                        # end for
+                    # end for
                 # end for
-                docs_token += [author_tokens]
-                truths += [author.get_property("gender")]
-            # end for
 
-            # Assess model error rate
-            error_rate = PAN17Metrics.error_rate(language_model, docs_token, truths) * 100.0
-            print("Error rate : %f %%" % error_rate)
-            error_rate_average = np.append(error_rate_average, error_rate)
+                # Finalize model
+                language_model.finalize_model()
+
+                # Create author profile
+                docs_token = []
+                truths = []
+                for author in test:
+                    author_tokens = []
+                    for doc in author.get_documents():
+                        author_tokens += doc.get_tokens()
+                    # end for
+                    docs_token += [author_tokens]
+                    truths += [author.get_property("gender")]
+                # end for
+
+                # Assess model error rate
+                error_rate = PAN17Metrics.error_rate(language_model, docs_token, truths) * 100.0
+                print("Error rate : %f %%" % error_rate)
+                error_rate_average = np.append(error_rate_average, error_rate)
+            # end for
+            print("10K Fold error rate for %f is %f" % (l, np.average(error_rate_average)))
         # end for
-        print("10K Fold error rate is %f" % np.average(error_rate_average))
     # end with
 
     # Save model
