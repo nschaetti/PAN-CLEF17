@@ -7,14 +7,11 @@
 
 # Import packages
 import argparse
-import pySpeeches as ps
-from PAN17PortugueseTextCleaner import PAN17PortugueseTextCleaner
-from PAN17EnglishTextCleaner import PAN17EnglishTextCleaner
-from PAN17SpanishTextCleaner import PAN17SpanishTextCleaner
-from PAN17ArabicTextCleaner import PAN17ArabicTextCleaner
-from PAN17TruthLoader import PAN17TruthLoader
 import cPickle as pickle
 
+import pySpeeches as ps
+
+from tools.PAN17TruthLoader import PAN17TruthLoader
 
 ###########################
 # Start here

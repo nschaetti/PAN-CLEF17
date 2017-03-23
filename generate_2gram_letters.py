@@ -7,10 +7,9 @@
 
 # Import packages
 import argparse
-import pySpeeches as ps
-from PAN17TruthLoader import PAN17TruthLoader
-from PAN17LetterGramsReducer import PAN17LetterGramsReducer
 import cPickle as pickle
+
+from reducer.PAN17LetterGramsReducer import PAN17LetterGramsReducer
 
 ###########################
 # Start here

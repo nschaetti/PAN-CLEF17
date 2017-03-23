@@ -7,12 +7,11 @@
 
 # Import packages
 import argparse
-import pySpeeches as ps
-import numpy as np
-from PAN17TruthLoader import PAN17TruthLoader
-from PAN17LetterGramsReducer import PAN17LetterGramsReducer
-from PAN17DiscreteSymbolGenerator import PAN17DiscreteSymbolGenerator
 import cPickle as pickle
+
+import numpy as np
+
+from PAN17DiscreteSymbolGenerator import PAN17DiscreteSymbolGenerator
 
 # ALPHABETS
 ENGLISH_ALPHABET = u"aàáâãbcçdeéèêfghiíïîjklmnoóôõpqrstuúüûvwxyz"

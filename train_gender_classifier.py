@@ -7,12 +7,8 @@
 
 # Import packages
 import argparse
-import matplotlib.pyplot as plt
-import pySpeeches as ps
-from PAN17TruthLoader import PAN17TruthLoader
-from PAN17LetterGramsReducer import PAN17LetterGramsReducer
-from PAN17FeaturesMatrixGenerator import PAN17FeaturesMatrixGenerator
 import cPickle as pickle
+import matplotlib.pyplot as plt
 
 ###########################
 # Start here
