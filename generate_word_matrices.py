@@ -40,7 +40,7 @@ if __name__ == "__main__":
         data_set = pickle.load(f)
 
         # Matrix generator
-        matrix_generator = PAN17WordMatrixGenerator(520, input_scaling=255.0, bow=False)
+        matrix_generator = PAN17WordMatrixGenerator(520, input_scaling=255.0, bow=True)
 
         # For each document
         print("Add each tokens to the index")
