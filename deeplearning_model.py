@@ -32,14 +32,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="PAN17 Deep-Learning for gender classification")
 
     # Argument
+    parser.add_argument("--epoch", type=int, default=10, metavar='E', help="Number of Epoch (default:10)")
+    parser.add_argument("--batch-size", type=int, default=64, metavar='B', help="Input batch size (default:64)")
     parser.add_argument("--file", type=str, help="Input data set Pickle file", default="pan17clef.p")
-    parser.add_argument("--output", type=str, help="Output model Pickle file", default="output.p")
     parser.add_argument("--lr", type=float, default=0.01, metavar='LR', help='Learning rate (default: 0.01)')
     parser.add_argument("--momentum", type=float, default=0.5, metavar='M', help="SGD momentum (default: 0.5)")
     parser.add_argument("--no-cuda", action='store_true', default=False, help="Enables CUDA training")
     parser.add_argument("--seed", type=int, default=1, metavar='S', help="Random seed (default:1)")
     parser.add_argument("--log-interval", type=int, default=10, metavar='N',
-                        help="How many batches to wait before logging traning status")
+                        help="How many batches to wait before logging training status (default: 10)")
     args = parser.parse_args()
     args.cuda = not args.no_cuda and torch.cuda.is_available()
 
@@ -50,18 +51,30 @@ if __name__ == "__main__":
         data_set = pickle.load(f)
 
         # Sample size
-        n_samples = len(data_set['authors'])
+        n_samples = len(data_set['2grams'])
         fold_size = int(math.ceil(n_samples / 10.0))
 
+        # Get truths
+        truths = []
+        for truth in data_set['labels']:
+            truths += [truth[0]]
+        # end for
+
         # Deep-Learning model
-        deep_learning_model = PAN17DeepNNModel(classes=data_set['genders'])
+        deep_learning_model = PAN17DeepNNModel(classes=("male", "female"), cuda=args.cuda, lr=args.lr,
+                                               momentum=args.momentum, log_interval=args.log_interval, seed=args.seed)
+
+        # Data set
+        th_data_set = deep_learning_model.to_torch_data_set(data_set['2grams'], truths)
 
         # Train with each document
-        print("Training DNN model...")
+        for epoch in range(1, args.epoch+1):
+            deep_learning_model.train(epoch, th_data_set, batch_size=args.batch_size)
+            deep_learning_model.test(epoch, th_data_set, batch_size=args.batch_size)
+        # end for
 
         # Assess model error rate
-        print("Calculating error rate...")
-
+        #print("Calculating error rate...")
         #error_rate = PAN17Metrics.error_rate(deep_learning_model, docs_token, truths) * 100.0
         #print("Error rate : %f %%" % error_rate)
 # end if

@@ -24,7 +24,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class PAN17ConvNet(nn.Moduke):
+class PAN17ConvNet(nn.Module):
 
     # Constructor
     def __init__(self):
@@ -32,11 +32,21 @@ class PAN17ConvNet(nn.Moduke):
         Constructor
         """
         super(PAN17ConvNet, self).__init__()
+
+        # 2D convolution layer, 1 in channel, 10 out channels (filters), kernel size 5
         self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
+
+        # 2D convolution layer, 10 input channels, 20 output channels (filters), kernel size 5
         self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
+
+        # 2D Dropout layer, with probability of an element to be zeroed to 0.5
         self.conv2_drop = nn.Dropout2d()
-        self.fc1 = nn.Linear(320, 50)
-        self.fc2 = nn.Linear(50, 10)
+
+        # Linear transformation with 4800 inputs features and 50 output features
+        self.fc1 = nn.Linear(4800, 400)
+
+        # Linear transformation with 50 inputs features and 2 output features
+        self.fc2 = nn.Linear(400, 2)
     # end __init__
 
     # Forward
@@ -46,12 +56,29 @@ class PAN17ConvNet(nn.Moduke):
         :param x:
         :return:
         """
-        x = F.relu(F.max_pool2d(self.conv1(x), 2))
+        # ReLU << Max pooling 2D with kernel size 2 << Convolution layer 1 << x
+        x = self.conv1(x)
+        x = F.max_pool2d(x, 2)
+        x = F.relu(x)
+
+        # ReLU << Max pooling 2D with kernel size 2 << Dropout 2D << Convolution layer 2 << x
         x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
-        x = x.view(-1, 320)
+        #print("x : ")
+        #print(x.size())
+        #exit()
+        # Put all 320 features into 1D line << x
+        x = x.view(-1, 4800)
+
+        # ReLU << Linear model on 4800 features to 50 outputs << x
         x = F.relu(self.fc1(x))
+
+        # Trained dropout << x
         x = F.dropout(x, training=self.training)
+
+        # Linear model on 50 features to 2 outputs
         x = self.fc2(x)
+
+        # Softmax layer << x
         return F.log_softmax(x)
     # end forward
 

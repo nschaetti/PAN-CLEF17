@@ -34,43 +34,172 @@ from PAN17ConvNet import PAN17ConvNet
 class PAN17DeepNNModel(PAN17Classifier):
 
     # Constructor
-    def __init__(self, classes=[], cuda=False, lr=0.01, momentum=0.5):
+    def __init__(self, classes=[], cuda=False, lr=0.01, momentum=0.5, log_interval=10, seed=1):
         """
 
         :param classes:
         """
         super(PAN17DeepNNModel, self).__init__()
+        self._classes = classes
+        self._log_interval = log_interval
         self._model = PAN17ConvNet()
+        self._cuda = cuda
         if cuda:
             self._model.cuda()
+        self._model.double()
+        torch.manual_seed(seed)
+        if cuda:
+            torch.cuda.manual_seed(seed)
         self._optimizer = optim.SGD(self._model.parameters(), lr=lr, momentum=momentum)
-        self._kwargs = {'num_workers' : 1, 'pin_memory': True} if cuda else {}
         self._train_loader = None
+        self._kwargs = {'num_workers': 1, 'pin_memory': True} if self._cuda else {}
     # end __init__
 
-    # Train
-    def train(self, epoch, batch_size=64):
+    # Class to int
+    def _class_to_int(self, c):
         """
-        Train the model.
-        :param epoch:
+
+        :param c:
         :return:
         """
-        self._train_loader = torch.utils.data.DataLoader(epoch, batch_size=batch_size, shuffle=False, **self._kwargs)
+        return self._classes.index(c)
+    # end _class_to_int
+
+    # Int to class
+    def _int_to_class(self, i):
+        """
+
+        :param i:
+        :return:
+        """
+        return self._classes[i]
+    # end _int_to_class
+
+    # Numpy matrix to Tensor
+    def matrix_to_tensor(self, m):
+        h = int(m.shape[0])
+        w = int(m.shape[1])
+        x = torch.DoubleTensor(1, h, w)
+        for i in range(h):
+            for j in range(w):
+                x[0, i, j] = m[i, j]
+            # end for
+        # end for
+        return x
+    # end _matrix_to_tensor
+
+    # To Torch data set
+    def to_torch_data_set(self, matrices, truths):
+        """
+
+        :param matrices:
+        :param truths:
+        :return:
+        """
+        result = []
+        for index, (m) in enumerate(matrices):
+            truth = truths[index]
+            result += [(self.matrix_to_tensor(m), self._class_to_int(truth))]
+        # end for
+        return result
+    # end to_torch_data_set
+
+    # Train
+    def train(self, epoch, data_set, batch_size=64):
+        """
+        Train
+        :param epoch:
+        :param matrices:
+        :param truths:
+        :param batch_size:
+        :return:
+        """
+        # To Torch data set
+        train_loader = torch.utils.data.DataLoader(data_set, batch_size=batch_size, shuffle=False, **self._kwargs)
+
+        # Put model in train mode
         self._model.train()
-        for batch_idx
+
+        # For each batch
+        for batch_idx, (data, target) in enumerate(train_loader):
+            # Create variables
+            if self._cuda:
+                data, target = data.cuda(), target.cuda()
+            # end if
+            data, target = Variable(data), Variable(target)
+
+            # ??
+            self._optimizer.zero_grad()
+
+            # Get model output
+            output = self._model(data)
+
+            # Get loss
+            loss = F.nll_loss(output, target)
+
+            # Apply difference backward
+            loss.backward()
+
+            # ??
+            self._optimizer.step()
+
+            # Log if necessary
+            #if batch_idx % self._log_interval == 0:
+            #    print("Train Epoch : {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}".format(
+            #        epoch, (batch_idx + 1) * len(data), len(train_loader.dataset),
+            #        100.0 * batch_idx / len(train_loader), loss.data[0]
+            #    ))
+            # end if
+        # end for
     # end train
 
     # Evaluate unseen document
-    def classify(self, epoch):
+    def test(self, epoch, data_set, batch_size=64):
         """
 
         :param tokens:
         :return:
         """
+        # ??
         self._model.eval()
+
+        # Loss and correct
         test_loss = 0
         correct = 0
-        for data, target in
+
+        # To Torch data set
+        test_loader = torch.utils.data.DataLoader(data_set, batch_size=batch_size, shuffle=False, **self._kwargs)
+
+        # For each batch
+        for data, target in test_loader:
+            # Variables
+            if self._cuda:
+                data, target = data.cuda(), target.cuda()
+            # end if
+            data, target = Variable(data), Variable(target)
+
+            # Model's output
+            output = self._model(data)
+
+            # Loss
+            test_loss += F.nll_loss(output, target).data[0]
+
+            # Get the index if the max log-probability
+            pred = output.data.max(1)[1]
+
+            # Add if correct
+            correct += pred.eq(target.data).cpu().sum()
+        # end for
+
+        # Loss function already averages over batch size
+        test_loss = test_loss
+        test_loss /= len(test_loader)
+
+        # Print informations
+        print("Iteration {}: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)".format(
+            epoch, test_loss, correct, len(test_loader.dataset),
+            100.0 * correct / len(test_loader.dataset)
+        ))
     # end evaluate_doc
 
 # end PAN17ProbabilisticModel
