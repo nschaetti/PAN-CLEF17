@@ -78,7 +78,7 @@ if __name__ == "__main__":
         training = np.delete(grams_set, -1, axis=0)
         training_truths = np.delete(truths_set, -1, axis=0)
         training.shape = (fold_size * 9, m_height, m_width)
-        training_truths = (fold_size * 9)
+        training_truths.shape = (fold_size * 9)
         print("test : ")
         print(test.shape)
         print(test_truths.shape)
