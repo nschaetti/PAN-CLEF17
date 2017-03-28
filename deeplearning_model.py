@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
         # K-10 fold
         grams_set = np.array(data_set['2grams'])
-        truths_set = np.array(data_set['labels'])
+        truths_set = np.array(data_set['labels'][:, 0])
         grams_set.shape = (10, fold_size, grams_set.shape[1], grams_set.shape[2])
         print(truths_set.shape)
         print(truths_set)
