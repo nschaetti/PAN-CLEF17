@@ -66,9 +66,9 @@ if __name__ == "__main__":
 
         # K-10 fold
         grams_set = np.array(data_set['2grams'])
+        grams_set.shape = (10, fold_size, grams_set.shape[1], grams_set.shape[2])
         print(grams_set.shape)
         exit()
-        grams_set.shape = (10, fold_size)
 
         # Select training and test sets
         test = grams_set[-1]
