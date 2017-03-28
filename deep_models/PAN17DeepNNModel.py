@@ -80,11 +80,11 @@ class PAN17DeepNNModel(PAN17Classifier):
     def matrix_to_tensor(self, m):
         h = int(m.shape[0])
         w = int(m.shape[1])
-        print("%d x %d" % (w, h))
         x = torch.DoubleTensor(1, h, w)
         for i in range(h):
             for j in range(w):
-                x[0, i, j] = m[i, j]
+                #x[0, i, j] = m[i, j]
+                x[0, i, j] = 0
             # end for
         # end for
         return x
