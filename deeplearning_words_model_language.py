@@ -42,9 +42,9 @@ if __name__ == "__main__":
         # Load
         print("Loading data set %s" % args.file)
         data_set = pickle.load(f)
-
+        print("Data set loaded...")
         # Sample size
-        n_samples = len(data_set['2grams'])
+        n_samples = len(data_set['words'])
         fold_size = int(math.ceil(n_samples / 10.0))
 
         # Get truths
@@ -61,7 +61,7 @@ if __name__ == "__main__":
                                                seed=args.seed)
 
         # K-10 fold
-        grams_set = np.array(data_set['2grams'])
+        grams_set = np.array(data_set['words'])
         m_height = grams_set.shape[1]
         m_width = grams_set.shape[2]
         truths_set = np.array(truths)
@@ -77,10 +77,12 @@ if __name__ == "__main__":
         training_truths.shape = (fold_size * 9)
 
         # Data set
-        tr_data_set = deep_learning_model.to_torch_data_set(training, training_truths)
-        te_data_set = deep_learning_model.to_torch_data_set(test, test_truths)
+        print("Data set to Torch Tensors...")
+        tr_data_set = deep_learning_model.to_torch_data_set(training.tolist(), training_truths)
+        te_data_set = deep_learning_model.to_torch_data_set(test.tolist(), test_truths)
 
         # Train with each document
+        print("Testing model...")
         for epoch in range(1, args.epoch+1):
             deep_learning_model.train(epoch, tr_data_set, batch_size=args.batch_size)
             deep_learning_model.test(epoch, te_data_set, batch_size=args.batch_size)
