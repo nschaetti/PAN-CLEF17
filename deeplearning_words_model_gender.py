@@ -42,7 +42,7 @@ if __name__ == "__main__":
         # Load
         print("Loading data set %s" % args.file)
         data_set = pickle.load(f)
-
+        print("Data set loaded...")
         # Sample size
         n_samples = len(data_set['words'])
         fold_size = int(math.ceil(n_samples / 10.0))
