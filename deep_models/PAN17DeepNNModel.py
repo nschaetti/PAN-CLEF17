@@ -120,6 +120,9 @@ class PAN17DeepNNModel(PAN17Classifier):
         # Put model in train mode
         self._model.train()
 
+        # Loss
+        training_loss = 0
+
         # For each batch
         for batch_idx, (data, target) in enumerate(train_loader):
             # Create variables
@@ -136,21 +139,21 @@ class PAN17DeepNNModel(PAN17Classifier):
 
             # Get loss
             loss = F.nll_loss(output, target)
+            training_loss += loss.data[0]
 
             # Apply difference backward
             loss.backward()
 
             # ??
             self._optimizer.step()
-
-            # Log if necessary
-            #if batch_idx % self._log_interval == 0:
-            #    print("Train Epoch : {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}".format(
-            #        epoch, (batch_idx + 1) * len(data), len(train_loader.dataset),
-            #        100.0 * batch_idx / len(train_loader), loss.data[0]
-            #    ))
-            # end if
         # end for
+
+        # Loss function already averages over batch size
+        training_loss = training_loss
+        training_loss /= len(train_loader)
+
+        # Print
+        print("Iteration : {}\tTraining Loss: {:.6f}".format(epoch, training_loss))
     # end train
 
     # Evaluate unseen document
@@ -196,7 +199,7 @@ class PAN17DeepNNModel(PAN17Classifier):
         test_loss /= len(test_loader)
 
         # Print informations
-        print("Iteration {}: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)".format(
+        print("Iteration {}: Average test loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)".format(
             epoch, test_loss, correct, len(test_loader.dataset),
             100.0 * correct / len(test_loader.dataset)
         ))
