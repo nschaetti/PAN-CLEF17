@@ -44,7 +44,7 @@ if __name__ == "__main__":
         data_set = pickle.load(f)
 
         # Sample size
-        n_samples = len(data_set['2grams'])
+        n_samples = len(data_set['words'])
         fold_size = int(math.ceil(n_samples / 10.0))
 
         # Get truths
@@ -59,7 +59,7 @@ if __name__ == "__main__":
                                                seed=args.seed)
 
         # K-10 fold
-        grams_set = np.array(data_set['2grams'])
+        grams_set = np.array(data_set['words'])
         m_height = grams_set.shape[1]
         m_width = grams_set.shape[2]
         truths_set = np.array(truths)
