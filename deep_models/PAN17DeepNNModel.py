@@ -101,6 +101,7 @@ class PAN17DeepNNModel(PAN17Classifier):
         for index, (m) in enumerate(matrices):
             truth = truths[index]
             result += [(self.matrix_to_tensor(m), self._class_to_int(truth))]
+            print(index / len(matrices))
         # end for
         return result
     # end to_torch_data_set
