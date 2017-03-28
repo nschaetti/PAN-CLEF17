@@ -83,8 +83,7 @@ class PAN17DeepNNModel(PAN17Classifier):
         x = torch.DoubleTensor(1, h, w)
         for i in range(h):
             for j in range(w):
-                #x[0, i, j] = m[i, j]
-                x[0, i, j] = 0
+                x[0, i, j] = m[i, j]
             # end for
         # end for
         return x
