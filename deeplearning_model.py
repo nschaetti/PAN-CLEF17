@@ -67,20 +67,29 @@ if __name__ == "__main__":
         # K-10 fold
         grams_set = np.array(data_set['2grams'])
         grams_set.shape = (10, fold_size, grams_set.shape[1], grams_set.shape[2])
-        print(grams_set.shape)
-        exit()
+        truths.shape = (10, fold_size)
 
         # Select training and test sets
         test = grams_set[-1]
+        test_truths = truths[-1]
         training = np.delete(grams_set, -1, axis=0)
+        training_truths = np.delete(truths, -1, axis=0)
         training.shape = (fold_size * 9)
-
+        training_truths = (fold_size * 9)
+        print("test : ")
+        print(test.shape)
+        print(test_truths.shape)
+        print("training : ")
+        print(training.shape)
+        print(training_truths.shape)
+        exit()
         # Data set
-        th_data_set = deep_learning_model.to_torch_data_set(data_set['2grams'], truths)
+        tr_data_set = deep_learning_model.to_torch_data_set(training, training_truths)
+        te_data_set = deep_learning_model.to_torch_data_set(test, test_truths)
 
         # Train with each document
         for epoch in range(1, args.epoch+1):
-            deep_learning_model.train(epoch, th_data_set, batch_size=args.batch_size)
-            deep_learning_model.test(epoch, th_data_set, batch_size=args.batch_size)
+            deep_learning_model.train(epoch, tr_data_set, batch_size=args.batch_size)
+            deep_learning_model.test(epoch, te_data_set, batch_size=args.batch_size)
         # end for
 # end if
