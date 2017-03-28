@@ -201,7 +201,7 @@ class PAN17DeepNNModel(PAN17Classifier):
         # Print informations
         print("Iteration {}: Average test loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)".format(
             epoch, test_loss, correct, len(test_loader.dataset),
-            100.0 * correct / len(test_loader.dataset)
+            100.0 * float(correct) / float(len(test_loader.dataset))
         ))
     # end evaluate_doc
 
