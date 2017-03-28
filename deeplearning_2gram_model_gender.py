@@ -9,6 +9,7 @@
 import argparse
 import numpy as np
 import math
+from deep_models.PAN17ConvNet import PAN17ConvNet
 from deep_models.PAN17DeepNNModel import PAN17DeepNNModel
 import cPickle as pickle
 import torch
@@ -53,8 +54,9 @@ if __name__ == "__main__":
         # end for
 
         # Deep-Learning model
-        deep_learning_model = PAN17DeepNNModel(classes=("male", "female"), cuda=args.cuda, lr=args.lr,
-                                               momentum=args.momentum, log_interval=args.log_interval, seed=args.seed)
+        deep_learning_model = PAN17DeepNNModel(PAN17ConvNet(n_classes=2), classes=("male", "female"), cuda=args.cuda,
+                                               lr=args.lr, momentum=args.momentum, log_interval=args.log_interval,
+                                               seed=args.seed)
 
         # K-10 fold
         grams_set = np.array(data_set['2grams'])

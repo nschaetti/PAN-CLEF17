@@ -34,7 +34,7 @@ from PAN17ConvNet import PAN17ConvNet
 class PAN17DeepNNModel(PAN17Classifier):
 
     # Constructor
-    def __init__(self, classes=[], cuda=False, lr=0.01, momentum=0.5, log_interval=10, seed=1):
+    def __init__(self, model, classes=[], cuda=False, lr=0.01, momentum=0.5, log_interval=10, seed=1):
         """
 
         :param classes:
@@ -42,7 +42,8 @@ class PAN17DeepNNModel(PAN17Classifier):
         super(PAN17DeepNNModel, self).__init__()
         self._classes = classes
         self._log_interval = log_interval
-        self._model = PAN17ConvNet()
+        #self._model = PAN17ConvNet()
+        self._model = model
         self._cuda = cuda
         if cuda:
             self._model.cuda()
