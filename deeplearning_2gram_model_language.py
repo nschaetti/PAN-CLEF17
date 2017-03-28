@@ -9,18 +9,9 @@
 import argparse
 import numpy as np
 import math
-import sys
-import tempfile
-from six.moves import urllib
 from deep_models.PAN17DeepNNModel import PAN17DeepNNModel
-from tools.PAN17Metrics import PAN17Metrics
 import cPickle as pickle
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from torchvision import datasets, transforms
-from torch.autograd import Variable
 
 
 ###########################
@@ -41,6 +32,7 @@ if __name__ == "__main__":
     parser.add_argument("--seed", type=int, default=1, metavar='S', help="Random seed (default:1)")
     parser.add_argument("--log-interval", type=int, default=10, metavar='N',
                         help="How many batches to wait before logging training status (default: 10)")
+    parser.add_argument("--index", type=int, default=-1, metavar='I', help="Test set index (default:-1)")
     args = parser.parse_args()
     args.cuda = not args.no_cuda and torch.cuda.is_available()
 
@@ -58,12 +50,11 @@ if __name__ == "__main__":
         truths = []
         for truth in data_set['labels']:
             truths += [truth[1]]
-            print(truths)
         # end for
-        exit()
 
         # Deep-Learning model
-        deep_learning_model = PAN17DeepNNModel(classes=("male", "female"), cuda=args.cuda, lr=args.lr,
+        deep_learning_model = PAN17DeepNNModel(classes=('great britain', 'canada', 'ireland', 'new zealand',
+                                                        'australia'), cuda=args.cuda, lr=args.lr,
                                                momentum=args.momentum, log_interval=args.log_interval, seed=args.seed)
 
         # K-10 fold
