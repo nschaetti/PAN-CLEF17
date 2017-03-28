@@ -66,12 +66,9 @@ if __name__ == "__main__":
 
         # K-10 fold
         grams_set = np.array(data_set['2grams'])
-        truths_set = np.array(data_set['labels'][:, 0])
+        truths_set = np.array(truths)
         grams_set.shape = (10, fold_size, grams_set.shape[1], grams_set.shape[2])
-        print(truths_set.shape)
-        print(truths_set)
-        exit()
-        truths_set.shape = (10, fold_size)
+        truths_set.shape = (10, fold_size, 2)
 
         # Select training and test sets
         test = grams_set[-1]
@@ -79,7 +76,7 @@ if __name__ == "__main__":
         training = np.delete(grams_set, -1, axis=0)
         training_truths = np.delete(truths_set, -1, axis=0)
         training.shape = (fold_size * 9)
-        training_truths = (fold_size * 9)
+        training_truths = (fold_size * 9, 2)
         print("test : ")
         print(test.shape)
         print(test_truths.shape)
