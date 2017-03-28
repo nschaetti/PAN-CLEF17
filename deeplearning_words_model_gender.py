@@ -60,6 +60,8 @@ if __name__ == "__main__":
 
         # K-10 fold
         grams_set = np.array(data_set['words'])
+        print(grams_set.shape)
+        exit()
         m_height = grams_set.shape[1]
         m_width = grams_set.shape[2]
         truths_set = np.array(truths)
