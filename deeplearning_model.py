@@ -79,13 +79,7 @@ if __name__ == "__main__":
         training_truths = np.delete(truths_set, -1, axis=0)
         training.shape = (fold_size * 9, m_height, m_width)
         training_truths.shape = (fold_size * 9)
-        print("test : ")
-        print(test.shape)
-        print(test_truths.shape)
-        print("training : ")
-        print(training.shape)
-        print(training_truths.shape)
-        exit()
+
         # Data set
         tr_data_set = deep_learning_model.to_torch_data_set(training, training_truths)
         te_data_set = deep_learning_model.to_torch_data_set(test, test_truths)
