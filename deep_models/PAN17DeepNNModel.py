@@ -156,7 +156,7 @@ class PAN17DeepNNModel(PAN17Classifier):
         training_loss /= len(train_loader)
 
         # Print
-        print("Iteration : {}\tTraining Loss: {:.6f}".format(epoch, training_loss))
+        print("Iteration {}: Training Loss: {:.4f}".format(epoch, training_loss))
     # end train
 
     # Evaluate unseen document
