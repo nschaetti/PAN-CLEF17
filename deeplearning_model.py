@@ -64,6 +64,17 @@ if __name__ == "__main__":
         deep_learning_model = PAN17DeepNNModel(classes=("male", "female"), cuda=args.cuda, lr=args.lr,
                                                momentum=args.momentum, log_interval=args.log_interval, seed=args.seed)
 
+        # K-10 fold
+        grams_set = np.array(data_set['2grams'])
+        print(grams_set.shape)
+        exit()
+        grams_set.shape = (10, fold_size)
+
+        # Select training and test sets
+        test = grams_set[-1]
+        training = np.delete(grams_set, -1, axis=0)
+        training.shape = (fold_size * 9)
+
         # Data set
         th_data_set = deep_learning_model.to_torch_data_set(data_set['2grams'], truths)
 
@@ -72,9 +83,4 @@ if __name__ == "__main__":
             deep_learning_model.train(epoch, th_data_set, batch_size=args.batch_size)
             deep_learning_model.test(epoch, th_data_set, batch_size=args.batch_size)
         # end for
-
-        # Assess model error rate
-        #print("Calculating error rate...")
-        #error_rate = PAN17Metrics.error_rate(deep_learning_model, docs_token, truths) * 100.0
-        #print("Error rate : %f %%" % error_rate)
 # end if
