@@ -69,6 +69,7 @@ if __name__ == "__main__":
         truths_set = np.array(data_set['labels'])
         grams_set.shape = (10, fold_size, grams_set.shape[1], grams_set.shape[2])
         print(truths_set.shape)
+        print(truths_set)
         exit()
         truths_set.shape = (10, fold_size)
 
