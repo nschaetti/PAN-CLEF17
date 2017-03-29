@@ -8,9 +8,8 @@
 # Import packages
 import argparse
 import cPickle as pickle
-
 import pySpeeches as ps
-
+import cleaners
 from tools.PAN17TruthLoader import PAN17TruthLoader
 
 ###########################
