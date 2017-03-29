@@ -9,7 +9,10 @@
 import argparse
 import cPickle as pickle
 import pySpeeches as ps
-from cleaners import *
+from cleaners.PAN17ArabicTextCleaner import PAN17ArabicTextCleaner
+from cleaners.PAN17EnglishTextCleaner import PAN17EnglishTextCleaner
+from cleaners.PAN17PortugueseTextCleaner import PAN17PortugueseTextCleaner
+from cleaners.PAN17SpanishTextCleaner import PAN17SpanishTextCleaner
 from tools.PAN17TruthLoader import PAN17TruthLoader
 
 ###########################
