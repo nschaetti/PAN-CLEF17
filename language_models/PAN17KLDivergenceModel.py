@@ -112,7 +112,7 @@ class PAN17KLDivergenceModel(PAN17Classifier):
         prob = dict()
         # For each classes
         for c in self._classes_counts.keys():
-            prob[c] = self._classes_counts[c][token] * 10.0
+            prob[c] = self._classes_counts[c][token]
         # end for
         return prob
     # end word_probability
