@@ -147,7 +147,7 @@ class PAN17KLDivergenceModel(PAN17Classifier):
         getcontext().prec = 256
 
         # Initialize prob
-        total_tokens = float(len(tokens))
+        total_tokens = 0.0
         doc_probs = dict()
         for token in self._collection_counts.keys():
             doc_probs[token] = Decimal(0.0)
@@ -155,7 +155,10 @@ class PAN17KLDivergenceModel(PAN17Classifier):
 
         # For each tokens
         for token in tokens:
-            doc_probs[token] += 1.0
+            if token in doc_probs.keys():
+                doc_probs[token] += 1.0
+                total_tokens += 1.0
+            # end if
         # end for
         doc_probs /= total_tokens
 
