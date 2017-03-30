@@ -147,7 +147,7 @@ class PAN17KLDivergenceModel(PAN17Classifier):
         """
         # Precision
         getcontext().prec = 256
-        print("1")
+
         # Initialize prob
         total_tokens = 0.0
         doc_probs = dict()
@@ -157,24 +157,24 @@ class PAN17KLDivergenceModel(PAN17Classifier):
         for token in tokens:
             doc_probs[token] = Decimal(0.0)
         # end for
-        print("2")
+
         # For each tokens
         for token in tokens:
             doc_probs[token] += Decimal(1.0)
             total_tokens += 1.0
         # end for
-        print("3")
+
         # Calculate frequencies
         for token in doc_probs.keys():
             doc_probs[token] /= Decimal(total_tokens)
         # end for
-        print("4")
+
         # Compute KL divergence for each classes
         kl_divs = dict()
         for c in self._classes_counts.keys():
             kl_divs[c] = self._compute_kl_divergence(doc_probs, self._collection_counts)
         # end
-        print("5")
+
         mini = Decimal(10000000000.0)
         winner = ""
         # Get minimum divergence
@@ -184,6 +184,7 @@ class PAN17KLDivergenceModel(PAN17Classifier):
                 winner = c
             # end if
         # end for
+        print(winner)
         return winner
     # end evaluate_doc
 
