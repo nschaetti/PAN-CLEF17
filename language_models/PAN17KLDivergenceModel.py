@@ -160,7 +160,11 @@ class PAN17KLDivergenceModel(PAN17Classifier):
                 total_tokens += 1.0
             # end if
         # end for
-        doc_probs /= total_tokens
+
+        # Calculate frequencies
+        for token in doc_probs.keys():
+            doc_probs[token] /= total_tokens
+        # end for
 
         # Compute KL divergence for each classes
         kl_divs = dict()
