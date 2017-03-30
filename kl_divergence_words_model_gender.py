@@ -100,6 +100,7 @@ if __name__ == "__main__":
             # end for
 
             # Assess model error rate
+            print("Measuring error rate...")
             error_rate = PAN17Metrics.error_rate(language_model, docs_token, truths) * 100.0
             print("Error rate : %f %%" % error_rate)
             error_rate_average = np.append(error_rate_average, error_rate)
