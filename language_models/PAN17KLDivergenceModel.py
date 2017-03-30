@@ -156,7 +156,7 @@ class PAN17KLDivergenceModel(PAN17Classifier):
         # For each tokens
         for token in tokens:
             if token in doc_probs.keys():
-                doc_probs[token] += 1.0
+                doc_probs[token] += Decimal(1.0)
                 total_tokens += 1.0
             # end if
         # end for
