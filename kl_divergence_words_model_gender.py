@@ -55,6 +55,7 @@ if __name__ == "__main__":
             print("Error rate evaluation for K fold %d" % i)
 
             # Initialize model
+            print("Initializing model...")
             for doc in data_set['corpus'].get_documents():
                 for token in doc.get_tokens():
                     language_model.init_token_count(token)
@@ -67,6 +68,7 @@ if __name__ == "__main__":
             training.shape = (fold_size * 9)
 
             # For each author in training
+            print("Creating model...")
             for author in training:
                 gender = author.get_property("gender")
                 # For each doc
@@ -79,9 +81,11 @@ if __name__ == "__main__":
             # end for
 
             # Finalize model
+            print("Finalizing model...")
             language_model.finalize_model()
 
             # Create author profile
+            print("Creating author profile")
             docs_token = []
             truths = []
             for author in test:
