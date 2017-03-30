@@ -154,13 +154,14 @@ class PAN17KLDivergenceModel(PAN17Classifier):
         for token in self._collection_counts.keys():
             doc_probs[token] = Decimal(0.0)
         # end for
+        for token in tokens:
+            doc_probs[token] = Decimal(0.0)
+        # end for
         print("2")
         # For each tokens
         for token in tokens:
-            if token in doc_probs.keys():
-                doc_probs[token] += Decimal(1.0)
-                total_tokens += 1.0
-            # end if
+            doc_probs[token] += Decimal(1.0)
+            total_tokens += 1.0
         # end for
         print("3")
         # Calculate frequencies
