@@ -102,6 +102,7 @@ class PAN17FeaturesMatrixGenerator(object):
 
     # Letters to row position
     def _letter_to_position(self, letter):
+        letter = unicode(letter)
         try:
             pos = self._letters.index(letter.lower())
         except ValueError:
