@@ -125,13 +125,13 @@ class PAN17KLDivergenceModel(PAN17Classifier):
         :param q:
         :return:
         """
-        count = 0.0
+        count = Decimal(0.0)
         # For each words in distribution p
         for token in p.keys():
             if not self._upper:
                 token = token.lower()
             # end if
-            count += p[token] * math.log(p[token] / q[token])
+            count += Decimal(p[token] * math.log(Decimal(p[token]) / Decimal(q[token])))
         # end for
         return count
     # end _compute_KL_divergence
@@ -172,7 +172,7 @@ class PAN17KLDivergenceModel(PAN17Classifier):
             kl_divs[c] = self._compute_kl_divergence(doc_probs, self._collection_counts)
         # end
 
-        mini = 10000000000.0
+        mini = Decimal(10000000000.0)
         winner = ""
         # Get minimum divergence
         for c in self._classes_counts.keys():
