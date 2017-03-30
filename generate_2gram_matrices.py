@@ -51,13 +51,13 @@ if __name__ == "__main__":
 
         # Reducer
         reducer = PAN17LetterGramsReducer(
-            letters=ARABIC_ALPHABET,
-            punctuations=ARABIC_PUNCTUATIONS, add_punctuation=True, add_first_letters=True, add_end_letters=True,
+            letters=SPANISH_ALPHABET,
+            punctuations=SPANISH_PUNCTUATIONS, add_punctuation=True, add_first_letters=True, add_end_letters=True,
             add_end_grams=True, add_first_grams=True, upper_case=args.upper)
 
         # Matrix generator
-        matrix_generator = PAN17FeaturesMatrixGenerator(letters=ARABIC_ALPHABET,
-                                              punctuations=ARABIC_PUNCTUATIONS, upper_case=args.upper)
+        matrix_generator = PAN17FeaturesMatrixGenerator(letters=SPANISH_ALPHABET,
+                                              punctuations=SPANISH_PUNCTUATIONS, upper_case=args.upper)
 
         # For each author
         for author in data_set['corpus'].get_authors():
