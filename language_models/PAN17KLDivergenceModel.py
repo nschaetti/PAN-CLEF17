@@ -131,10 +131,9 @@ class PAN17KLDivergenceModel(PAN17Classifier):
             if not self._upper:
                 token = token.lower()
             # end if
-            print(Decimal(p[token]))
-            print(Decimal(q[token]))
-            print((Decimal(p[token]) / Decimal(q[token])).ln())
-            count += Decimal(Decimal(p[token]) * (Decimal(p[token]) / Decimal(q[token])).ln())
+            if p[token] > 0:
+                count += Decimal(Decimal(p[token]) * (Decimal(p[token]) / Decimal(q[token])).ln())
+            # end if
         # end for
         return count
     # end _compute_KL_divergence
