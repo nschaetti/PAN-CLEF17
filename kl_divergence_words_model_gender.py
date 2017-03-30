@@ -36,7 +36,9 @@ if __name__ == "__main__":
     # Load data set
     with open(args.file, 'r') as f:
         # Load
+        print("Load data set...")
         data_set = pickle.load(f)
+        print("Dataset loaded...")
 
         # Sample size
         n_samples = len(data_set['authors'])
