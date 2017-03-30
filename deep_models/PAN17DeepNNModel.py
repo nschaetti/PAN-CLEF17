@@ -141,8 +141,6 @@ class PAN17DeepNNModel(PAN17Classifier):
             output = self._model(data)
 
             # Get loss
-            print(output.size)
-            print(target.size)
             loss = F.nll_loss(output, target)
             training_loss += loss.data[0]
 
