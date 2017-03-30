@@ -45,14 +45,14 @@ if __name__ == "__main__":
         fold_size = int(math.ceil(n_samples/10.0))
 
         # For a range of l
-        for l in np.arange(0.0001, 1.01, 0.05):
-        #for l in np.arange(50, 4001, 200):
-            print("Evaluating lambda = %f" % l)
-            #print("Evaluating mu = %f" % l)
+        #for l in np.arange(0.0001, 1.01, 0.05):
+        for l in np.arange(50, 4001, 200):
+            #print("Evaluating lambda = %f" % l)
+            print("Evaluating mu = %f" % l)
             # Probabilistic model
             language_model = PAN17LanguageModel(classes=data_set['genders'], upper=False)
-            language_model.set_smoothing(PAN17JelinekMercerSmoothing(l=l))
-            #language_model.set_smoothing(PAN17DirichletPriorSmoothing(mu=l))
+            #language_model.set_smoothing(PAN17JelinekMercerSmoothing(l=l))
+            language_model.set_smoothing(PAN17DirichletPriorSmoothing(mu=l))
 
             # K-10 fold
             author_sets = np.array(data_set['authors'])
