@@ -26,7 +26,7 @@ ARABIC_PUNCTUATIONS = u":?؟‎.!,;،؍"
 if __name__ == "__main__":
 
     # Argument parser
-    parser = argparse.ArgumentParser(description="PAN17 language model for gender classification")
+    parser = argparse.ArgumentParser(description="PAN17 TF-IDF for gender classification")
 
     # Argument
     parser.add_argument("--file", type=str, help="Input data set Pickle file", default="pan17clef.p")
