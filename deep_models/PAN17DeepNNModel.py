@@ -100,7 +100,7 @@ class PAN17DeepNNModel(PAN17Classifier):
         """
         result = []
         for index, (m) in enumerate(matrices):
-            print("%d on %d" % (index, len(matrices)))
+            #print("%d on %d" % (index, len(matrices)))
             truth = truths[index]
             result += [(self.matrix_to_tensor(m), self._class_to_int(truth))]
             #print("%d on %d" % (index, len(matrices)))
