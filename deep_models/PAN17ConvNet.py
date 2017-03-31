@@ -34,10 +34,10 @@ class PAN17ConvNet(nn.Module):
         super(PAN17ConvNet, self).__init__()
 
         # 2D convolution layer, 1 in channel, 10 out channels (filters), kernel size 5
-        self.conv1 = nn.Conv2d(1, 8, kernel_size=8)
+        self.conv1 = nn.Conv2d(1, 12, kernel_size=20)
 
         # 2D convolution layer, 10 input channels, 20 output channels (filters), kernel size 5
-        self.conv2 = nn.Conv2d(8, 16, kernel_size=8)
+        self.conv2 = nn.Conv2d(12, 24, kernel_size=20)
 
         # 2D Dropout layer, with probability of an element to be zeroed to 0.5
         self.conv2_drop = nn.Dropout2d()
