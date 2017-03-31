@@ -43,10 +43,10 @@ class PAN17ConvNet(nn.Module):
         self.conv2_drop = nn.Dropout2d()
 
         # Linear transformation with 4800 inputs features and 50 output features
-        self.fc1 = nn.Linear(144000, 14400)
+        self.fc1 = nn.Linear(50000, 5000)
 
         # Linear transformation with 50 inputs features and 2 output features
-        self.fc2 = nn.Linear(14400, n_classes)
+        self.fc2 = nn.Linear(5000, n_classes)
     # end __init__
 
     # Forward
