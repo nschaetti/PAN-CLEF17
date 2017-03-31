@@ -43,10 +43,10 @@ class PAN17ConvNet(nn.Module):
         self.conv2_drop = nn.Dropout2d()
 
         # Linear transformation with 4800 inputs features and 50 output features
-        self.fc1 = nn.Linear(322580, 10000)
+        self.fc1 = nn.Linear(5000, 500)
 
         # Linear transformation with 50 inputs features and 2 output features
-        self.fc2 = nn.Linear(10000, n_classes)
+        self.fc2 = nn.Linear(500, n_classes)
     # end __init__
 
     # Forward
@@ -67,7 +67,7 @@ class PAN17ConvNet(nn.Module):
         print(x.size())
         exit()
         # Put all 320 features into 1D line << x
-        x = x.view(-1, 10000)
+        x = x.view(-1, 5000)
 
         # ReLU << Linear model on 4800 features to 50 outputs << x
         x = F.relu(self.fc1(x))
