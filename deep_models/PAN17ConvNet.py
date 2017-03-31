@@ -63,9 +63,9 @@ class PAN17ConvNet(nn.Module):
 
         # ReLU << Max pooling 2D with kernel size 2 << Dropout 2D << Convolution layer 2 << x
         x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
-        #print("x : ")
-        #print(x.size())
-        #exit()
+        print("x : ")
+        print(x.size())
+        exit()
         # Put all 320 features into 1D line << x
         x = x.view(-1, 144000)
 
