@@ -34,7 +34,7 @@ class PAN17ConvNet(nn.Module):
         super(PAN17ConvNet, self).__init__()
 
         # 2D convolution layer, 1 in channel, 10 out channels (filters), kernel size 5
-        self.conv1 = nn.Conv2d(1, 10, kernel_size=8)
+        self.conv1 = nn.Conv2d(1, 10, kernel_size=8, stride=4)
 
         # 2D convolution layer, 10 input channels, 20 output channels (filters), kernel size 5
         self.conv2 = nn.Conv2d(10, 20, kernel_size=8)
