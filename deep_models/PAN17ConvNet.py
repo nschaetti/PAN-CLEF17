@@ -34,7 +34,7 @@ class PAN17ConvNet(nn.Module):
         super(PAN17ConvNet, self).__init__()
 
         # 2D convolution layer, 1 in channel, 10 out channels (filters), kernel size 5
-        self.conv1 = nn.Conv2d(1, 10, kernel_size=8, stride=4)
+        self.conv1 = nn.Conv2d(1, 10, kernel_size=8, stride=2)
 
         # 2D convolution layer, 10 input channels, 20 output channels (filters), kernel size 5
         self.conv2 = nn.Conv2d(10, 20, kernel_size=8)
@@ -43,10 +43,10 @@ class PAN17ConvNet(nn.Module):
         self.conv2_drop = nn.Dropout2d()
 
         # Linear transformation with 4800 inputs features and 50 output features
-        self.fc1 = nn.Linear(5000, 500)
+        self.fc1 = nn.Linear(62720, 6000)
 
         # Linear transformation with 50 inputs features and 2 output features
-        self.fc2 = nn.Linear(500, n_classes)
+        self.fc2 = nn.Linear(6000, n_classes)
     # end __init__
 
     # Forward
@@ -63,11 +63,11 @@ class PAN17ConvNet(nn.Module):
 
         # ReLU << Max pooling 2D with kernel size 2 << Dropout 2D << Convolution layer 2 << x
         x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
-        print("x : ")
-        print(x.size())
-        exit()
+        #print("x : ")
+        #print(x.size())
+        #exit()
         # Put all 320 features into 1D line << x
-        x = x.view(-1, 5000)
+        x = x.view(-1, 6000)
 
         # ReLU << Linear model on 4800 features to 50 outputs << x
         x = F.relu(self.fc1(x))
