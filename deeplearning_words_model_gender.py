@@ -74,8 +74,8 @@ if __name__ == "__main__":
 
         # Data set
         print("Data set to Torch Tensors...")
-        tr_data_set = deep_learning_model.to_torch_data_set(training.tolist()[0:10], training_truths)
-        te_data_set = deep_learning_model.to_torch_data_set(test.tolist()[0:10], test_truths)
+        tr_data_set = deep_learning_model.to_torch_data_set(training.tolist(), training_truths)
+        te_data_set = deep_learning_model.to_torch_data_set(test.tolist(), test_truths)
 
         # Train with each document
         print("Testing model...")
