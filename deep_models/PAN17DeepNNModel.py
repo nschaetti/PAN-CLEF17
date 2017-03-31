@@ -78,7 +78,7 @@ class PAN17DeepNNModel(PAN17Classifier):
 
     # Numpy matrix to Tensor
     def matrix_to_tensor(self, m):
-        #m = m.toarray()
+        m = m.toarray()
         h = int(m.shape[0])
         w = int(m.shape[1])
         x = torch.DoubleTensor(1, h, w)
