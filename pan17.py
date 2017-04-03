@@ -183,17 +183,21 @@ if __name__ == "__main__":
     parser.add_argument("--token", type=str, default="", metavar='T', help="Token", required=True)
     parser.add_argument("--tfidf_models", type=str, default="tfidf.p", metavar='F', help="TF-IDF model filename")
     parser.add_argument("--cnn_models", type=str, default="cnn.p", metavar='C', help="CNN model filename")
+    parser.add_argument("--no-update", action='store_true', default=False, help="Don't update data set if available")
     args = parser.parse_args()
 
     # For each languages
-    for lang in ["en", "es", "pt", "ar"]:
+    for lang in ["en", "es", "pt"]:
 
         # Create config file
         generate_config_file(lang, args.input_dataset, "/home/schaetti17/config")
 
         # Generate cleaned data set
-        generate_data_set(os.path.join("/home/schaetti17/config", lang + ".json"),
-                          os.path.join("/home/schaetti17/inputs", lang, "pan17" + lang + ".p"))
+        if not args.no_update or not os.path.exists(os.path.join("/home/schaetti17/inputs", lang,
+                                                                 "pan17" + lang + ".p")):
+            generate_data_set(os.path.join("/home/schaetti17/config", lang + ".json"),
+                              os.path.join("/home/schaetti17/inputs", lang, "pan17" + lang + ".p"))
+        # end if
     # end for
 
 # end if
