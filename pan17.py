@@ -82,10 +82,8 @@ if __name__ == "__main__":
     parser.add_argument("--output_dir", type=str, help="Input directory", default="../outputs", required=True)
     parser.add_argument("--data_server", type=str, help="Data server", default="None")
     parser.add_argument("--token", type=str, default="", metavar='T', help="Token", required=True)
-    parser.add_argument("--tfidf_models", type=str, default="tfidf.p", metavar='F', help="TF-IDF model filename",
-                        required=True)
-    parser.add_argument("--cnn_models", type=str, default="cnn.p", metavar='C', help="CNN model filename",
-                        required=True)
+    parser.add_argument("--tfidf_models", type=str, default="tfidf.p", metavar='F', help="TF-IDF model filename")
+    parser.add_argument("--cnn_models", type=str, default="cnn.p", metavar='C', help="CNN model filename")
     args = parser.parse_args()
 
     # For each languages
