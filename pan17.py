@@ -188,14 +188,14 @@ if __name__ == "__main__":
 
     # For each languages
     for lang in ["en", "es", "pt", "ar"]:
-
-        # Create config file
-        print("Creating configuration files for language %s..." % lang)
-        generate_config_file(lang, args.input_dataset, "/home/schaetti17/config")
-
         # Generate cleaned data set
         if not args.no_update or not os.path.exists(os.path.join("/home/schaetti17/inputs", lang,
                                                                  "pan17" + lang + ".p")):
+            # Create config file
+            print("Creating configuration files for language %s..." % lang)
+            generate_config_file(lang, args.input_dataset, "/home/schaetti17/config")
+
+            # Generate data files
             print("Generating data set for %s" % lang)
             generate_data_set(os.path.join("/home/schaetti17/config", lang + ".json"),
                               os.path.join("/home/schaetti17/inputs", lang, "pan17" + lang + ".p"))
