@@ -245,12 +245,12 @@ if __name__ == "__main__":
             data_set = pickle.load(f)
 
             # For each authors
-            for author in data_set['authors']:
+            for c_author in data_set['authors']:
                 # Author's name
-                name = author.get_name()
+                name = c_author.get_name()
 
                 # Classification
-                variety = classify_variety(the_author=author, the_model=tf_idf_model)
+                variety = classify_variety(the_author=c_author, the_model=tf_idf_model)
 
                 # Write
                 write_xml_output(name, lang, variety, "male", args.output_dir)
