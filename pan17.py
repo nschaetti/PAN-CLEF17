@@ -12,6 +12,12 @@ import json
 import numpy as np
 import math
 import cPickle as pickle
+import pySpeeches as ps
+from cleaners.PAN17ArabicTextCleaner import PAN17ArabicTextCleaner
+from cleaners.PAN17EnglishTextCleaner import PAN17EnglishTextCleaner
+from cleaners.PAN17PortugueseTextCleaner import PAN17PortugueseTextCleaner
+from cleaners.PAN17SpanishTextCleaner import PAN17SpanishTextCleaner
+from tools.PAN17TruthLoader import PAN17TruthLoader
 
 ###########################
 # FUNCTIONS
@@ -64,8 +70,98 @@ def generate_config_file(l, input_dir, config_dir):
     with open(os.path.join(config_dir, lang + ".json"), 'w+') as fi:
         json.dump(json_config, fi, sort_keys=True, indent=4)
     # end with
-
 # end generate_config_file
+
+
+# Generate data set
+def generate_data_set(config_file, output_file):
+
+    # Load configuration file
+    config = ps.importer.PySpeechesConfig.Instance()
+    config.load(config_file)
+
+    # New corpus
+    corpus = ps.dataset.PySpeechesCorpus("PAN17 Author Profiling data set")
+
+    # Set config
+    config.set_corpus(corpus)
+
+    # Final data set
+    data_set = dict()
+
+    # Data set informations
+    data_set['languages'] = []
+    data_set['genders'] = []
+
+    # Import each sources
+    for source in config.get_sources():
+        # Get authors
+        truths = PAN17TruthLoader.load_truth_file(source.get_entry_point() + "/truth.txt")
+
+        # Create collections
+        for author_id, gender, language in truths:
+            if gender not in data_set:
+                data_set[gender] = ps.dataset.PySpeechesDocumentCollection(gender)
+            # end if
+            if language not in data_set:
+                data_set[language] = ps.dataset.PySpeechesDocumentCollection(language)
+            # end if
+            if "authors_" + gender not in data_set:
+                data_set["authors_" + gender] = []
+            # end if
+            if "authors_" + language not in data_set:
+                data_set["authors_" + language] = []
+            # end if
+            if gender not in data_set['genders']:
+                data_set['genders'] += [gender]
+            # end if
+            if language not in data_set['languages']:
+                data_set['languages'] += [language]
+                # end if
+        # end for
+
+        # Directory importer
+        importer = ps.importer.PySpeechesDirectoryImporter(source, eval(source.get_text_cleaner()),
+                                                           ps.importer.PySpeechesXMLFileImporter)
+
+        # Import source
+        importer.import_source()
+
+        # For each authors
+        for author_id, gender, language in truths:
+            # Get author object
+            author = corpus.get_author(author_id)
+            # Set gender
+            author.set_property("gender", gender)
+            # Set language
+            author.set_property("language", language)
+            # end for
+    # end for
+
+    # For each author
+    for author in corpus.get_authors():
+        gender = author.get_property("gender")
+        language = author.get_property("language")
+        for doc in author.get_documents():
+            # print("Adding document %s to %s and %s" % (doc.get_title(), gender, language))
+            data_set[gender].add_document(doc, check_doublon=False)
+            data_set[language].add_document(doc, check_doublon=False)
+        # end for
+        data_set["authors_" + gender] += [author]
+        data_set["authors_" + language] += [author]
+    # end for
+
+    # Corpus
+    data_set['corpus'] = corpus
+    data_set['authors'] = corpus.get_authors()
+
+    # Save
+    print("Saving file %s" % output_file)
+    with open(output_file, 'w+') as f:
+        pickle.dump(data_set, f)
+    # end with
+
+# end generate_data_set
 
 ###########################
 # Start here
@@ -93,6 +189,9 @@ if __name__ == "__main__":
         # Create config file
         generate_config_file(lang, args.input_dataset, "/home/schaetti17/config")
 
+        # Generate cleaned data set
+        generate_data_set(os.path.join("/home/schaetti17/config", lang + ".config"),
+                          os.path.join("/home/schaetti17/inputs", lang, "pan17" + lang + ".p"))
     # end for
 
 # end if
