@@ -61,7 +61,7 @@ def generate_config_file(l, input_dir, config_dir):
     json_config['check_doublon'] = False
 
     # Write the config file
-    with open(os.path.join(config_dir, lang + ".json"), 'w') as fi:
+    with open(os.path.join(config_dir, lang + ".json"), 'w+') as fi:
         json.dump(json_config, fi, sort_keys=True, indent=4)
     # end with
 
