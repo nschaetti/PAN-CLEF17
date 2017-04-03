@@ -91,7 +91,7 @@ if __name__ == "__main__":
     for lang in ["en", "es", "pt", "ar"]:
 
         # Create config file
-        generate_config_file(lang, args.input_dataset, "~/config")
+        generate_config_file(lang, args.input_dataset, "/home/schaetti17/config")
 
     # end for
 
