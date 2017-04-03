@@ -28,7 +28,7 @@ class PAN17Metrics(object):
         index = 0
         count = 0
         for doc in docs:
-            print("%d on %d" % (index, len(docs)))
+            #print("%d on %d" % (index, len(docs)))
             predicted = classifier.classify(doc)
             if predicted != truth[index]:
                 count += 1

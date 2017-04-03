@@ -18,10 +18,18 @@ from cleaners.PAN17EnglishTextCleaner import PAN17EnglishTextCleaner
 from cleaners.PAN17PortugueseTextCleaner import PAN17PortugueseTextCleaner
 from cleaners.PAN17SpanishTextCleaner import PAN17SpanishTextCleaner
 from tools.PAN17TruthLoader import PAN17TruthLoader
+import xml.etree.cElementTree as ET
 
 ###########################
 # FUNCTIONS
 ###########################
+
+
+def write_xml_output(ids, lng, variety, gender, output_dir):
+    root = ET.Element("author", id=ids, lang=lng, variety=variety, gender=gender)
+    tree = ET.ElementTree(root)
+    tree.write(os.path.join(output_dir, author + ".xml"))
+# end write_xml_output
 
 
 # Generate a config file
@@ -137,7 +145,7 @@ def generate_data_set(config_file, output_file):
             author.set_property("gender", gender)
             # Set language
             author.set_property("language", language)
-            # end for
+        # end for
     # end for
 
     # For each author
@@ -174,20 +182,21 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="PAN17 Author Profiling Task software")
 
     # Argument
-    parser.add_argument("--input_dataset", type=str, help="Input data set directory", default="../inputs",
+    parser.add_argument("--input-dataset", type=str, help="Input data set directory", default="../inputs",
                         required=True)
-    parser.add_argument("--input_run", type=str, default="none", metavar='R', help="Input run (default:1)",
+    parser.add_argument("--input-run", type=str, default="none", metavar='R', help="Input run (default:1)",
                         required=True)
-    parser.add_argument("--output_dir", type=str, help="Input directory", default="../outputs", required=True)
-    parser.add_argument("--data_server", type=str, help="Data server", default="None")
+    parser.add_argument("--output-dir", type=str, help="Input directory", default="../outputs", required=True)
+    parser.add_argument("--data-server", type=str, help="Data server", default="None")
     parser.add_argument("--token", type=str, default="", metavar='T', help="Token", required=True)
-    parser.add_argument("--tfidf_models", type=str, default="tfidf.p", metavar='F', help="TF-IDF model filename")
-    parser.add_argument("--cnn_models", type=str, default="cnn.p", metavar='C', help="CNN model filename")
+    parser.add_argument("--tfidf-models", type=str, default="tfidf.p", metavar='F', help="TF-IDF model filename")
+    parser.add_argument("--cnn-models", type=str, default="cnn.p", metavar='C', help="CNN model filename")
     parser.add_argument("--no-update", action='store_true', default=False, help="Don't update data set if available")
     args = parser.parse_args()
 
     # For each languages
     for lang in ["en", "es", "pt", "ar"]:
+        data_set_file = os.path.join("/home/schaetti17/inputs", lang, "pan17" + lang + ".p")
         # Generate cleaned data set
         if not args.no_update or not os.path.exists(os.path.join("/home/schaetti17/inputs", lang,
                                                                  "pan17" + lang + ".p")):
@@ -197,8 +206,23 @@ if __name__ == "__main__":
 
             # Generate data files
             print("Generating data set for %s" % lang)
-            generate_data_set(os.path.join("/home/schaetti17/config", lang + ".json"),
-                              os.path.join("/home/schaetti17/inputs", lang, "pan17" + lang + ".p"))
+            generate_data_set(os.path.join("/home/schaetti17/config", lang + ".json"), data_set_file)
+
+            # Load data set
+            print("Load data from %s" % data_set_file)
+            with open(data_set_file, 'r') as f:
+                # Load
+                data_set = pickle.load(f)
+
+                # For each authors
+                for author in data_set['authors']:
+                    # Author's name
+                    name = author.get_name()
+
+                    # Write
+                    write_xml_output(name, lang, "canada", "male", args.output_dir)
+                # end for
+            # end with
         # end if
     # end for
 

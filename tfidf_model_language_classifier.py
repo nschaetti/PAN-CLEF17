@@ -103,4 +103,10 @@ if __name__ == "__main__":
         # end for
         print("10K Fold error rate is %f" % np.average(error_rate_average))
     # end with
+
+    # Save model
+    with open(args.output, 'w+') as f:
+        pickle.dump(word_vector_model, f)
+    # end with
+
 # end if
