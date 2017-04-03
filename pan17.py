@@ -26,6 +26,7 @@ import xml.etree.cElementTree as ET
 
 
 def write_xml_output(ids, lng, variety, gender, output_dir):
+    #print("Writing %s" % os.path.join(output_dir, ids + ".xml"))
     root = ET.Element("author", id=ids, lang=lng, variety=variety, gender=gender)
     tree = ET.ElementTree(root)
     tree.write(os.path.join(output_dir, ids + ".xml"))
@@ -173,6 +174,30 @@ def generate_data_set(config_file, output_file):
 
 # end generate_data_set
 
+
+# Load model
+def load_model(model_dir, lng, model_file):
+    with open(os.path.join(model_dir, lng, model_file)) as fi:
+        model = pickle.load(fi)
+        return model
+    # end with
+# end load_model
+
+
+# Classify variety
+def classify_variety(the_author, the_model):
+    # Get all tokens
+    docs_token = []
+    author_tokens = []
+    for doc in the_author.get_documents():
+        author_tokens += doc.get_tokens()
+    # end for
+    docs_token += [author_tokens]
+
+    # Classify
+    return the_model.classify(docs_token)
+# end classify_variety
+
 ###########################
 # Start here
 ###########################
@@ -209,6 +234,10 @@ if __name__ == "__main__":
             generate_data_set(os.path.join("/home/schaetti17/config", lang + ".json"), data_set_file)
         # end if
 
+        # Loading models
+        print("Loading models...")
+        tf_idf_model = load_model("/home/schaetti17/models", lang, args.tfidf_models)
+
         # Load data set
         print("Load data from %s" % data_set_file)
         with open(data_set_file, 'r') as f:
@@ -220,8 +249,11 @@ if __name__ == "__main__":
                 # Author's name
                 name = author.get_name()
 
+                # Classification
+                variety = classify_variety(the_author=author, the_model=tf_idf_model)
+
                 # Write
-                write_xml_output(name, lang, "canada", "male", args.output_dir)
+                write_xml_output(name, lang, variety, "male", args.output_dir)
             # end for
         # end with
     # end for
