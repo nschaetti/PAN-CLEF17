@@ -17,6 +17,7 @@ import cPickle as pickle
 # FUNCTIONS
 ###########################
 
+
 # Generate a config file
 def generate_config_file(l, input_dir, config_dir):
     """
@@ -61,7 +62,7 @@ def generate_config_file(l, input_dir, config_dir):
 
     # Write the config file
     with open(os.path.join(config_dir, lang + ".json"), 'w') as fi:
-        fi.write(json.dumps(json_config, sort_keys=True, indent=4))
+        json.dump(json_config, fi, sort_keys=True, indent=4)
     # end with
 
 # end generate_config_file
@@ -87,7 +88,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # For each languages
-    for lang in ["en","es","pt","ar"]:
+    for lang in ["en", "es", "pt", "ar"]:
 
         # Create config file
         generate_config_file(lang, args.input_dataset, "~/config")
