@@ -190,6 +190,7 @@ if __name__ == "__main__":
     for lang in ["en", "es", "pt", "ar"]:
 
         # Create config file
+        print("Creating configuration files...")
         generate_config_file(lang, args.input_dataset, "/home/schaetti17/config")
 
         # Generate cleaned data set
