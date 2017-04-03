@@ -187,7 +187,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # For each languages
-    for lang in ["en", "es", "pt"]:
+    for lang in ["en", "es", "pt", "ar"]:
 
         # Create config file
         generate_config_file(lang, args.input_dataset, "/home/schaetti17/config")
