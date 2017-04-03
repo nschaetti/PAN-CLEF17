@@ -187,15 +187,13 @@ def load_model(model_dir, lng, model_file):
 # Classify variety
 def classify_variety(the_author, the_model):
     # Get all tokens
-    docs_token = []
     author_tokens = []
     for doc in the_author.get_documents():
         author_tokens += doc.get_tokens()
     # end for
-    docs_token += [author_tokens]
 
     # Classify
-    return the_model.classify(docs_token)
+    return the_model.classify(author_tokens)
 # end classify_variety
 
 ###########################
