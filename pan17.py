@@ -28,7 +28,7 @@ import xml.etree.cElementTree as ET
 def write_xml_output(ids, lng, variety, gender, output_dir):
     root = ET.Element("author", id=ids, lang=lng, variety=variety, gender=gender)
     tree = ET.ElementTree(root)
-    tree.write(os.path.join(output_dir, author + ".xml"))
+    tree.write(os.path.join(output_dir, ids + ".xml"))
 # end write_xml_output
 
 
