@@ -9,10 +9,7 @@
 import argparse
 import numpy as np
 import math
-from deep_models.PAN17ConvNet import PAN17ConvNet
-from deep_models.PAN17DeepNNModel import PAN17DeepNNModel
 import cPickle as pickle
-import torch
 
 
 ###########################
