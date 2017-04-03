@@ -21,11 +21,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="PAN17 Author Profiling Task software")
 
     # Argument
-    parser.add_argument("--input_dataset", type=str, help="Input data set directory", default="../inputs")
-    parser.add_argument("--input_run", type=int, default=1, metavar='R', help="Input run (default:1)")
-    parser.add_argument("--output_dir", type=str, help="Input directory", default="../outputs")
-    parser.add_argument("--data_server", type=str, help="Data server", default="None")
-    parser.add_argument("--token", type=str, default="", metavar='T', help="Token")
+    parser.add_argument("--input_dataset", type=str, help="Input data set directory", default="../inputs", required=True)
+    parser.add_argument("--input_run", type=int, default=1, metavar='R', help="Input run (default:1)", required=True)
+    parser.add_argument("--output_dir", type=str, help="Input directory", default="../outputs", required=True)
+    parser.add_argument("--data_server", type=str, help="Data server", default="None", required=True)
+    parser.add_argument("--token", type=str, default="", metavar='T', help="Token", required=True)
     args = parser.parse_args()
 
     with open(args.output_dir + "/test.txt", 'w') as f:
