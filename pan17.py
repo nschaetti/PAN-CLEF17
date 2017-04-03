@@ -6,6 +6,8 @@
 # Date : 09 March 2017
 
 # Import packages
+import sys
+sys.path.append("/home/schaetti17/pySpeeches")
 import os
 import argparse
 import json
