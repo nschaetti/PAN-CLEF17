@@ -57,14 +57,16 @@ def generate_config_file(l, input_dir, config_dir):
 
     # JSON
     json_config = dict()
-    json_config['type'] = "directory"
-    json_config['name'] = names[l]
-    json_config['description'] = description[l]
-    json_config['entry_point'] = input_dir + "/" + l
-    json_config['file_regex'] = "[0-9a-zA-Z]+\\.xml"
-    json_config['text_cleaner'] = cleaners[l]
-    json_config['dict_size'] = 30000
-    json_config['check_doublon'] = False
+    source = dict()
+    source['type'] = "directory"
+    source['name'] = names[l]
+    source['description'] = description[l]
+    source['entry_point'] = input_dir + "/" + l
+    source['file_regex'] = "[0-9a-zA-Z]+\\.xml"
+    source['text_cleaner'] = cleaners[l]
+    source['dict_size'] = 30000
+    source['check_doublon'] = False
+    json_config['sources'] = [source]
 
     # Write the config file
     with open(os.path.join(config_dir, lang + ".json"), 'w+') as fi:
