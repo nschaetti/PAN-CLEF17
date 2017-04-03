@@ -207,23 +207,23 @@ if __name__ == "__main__":
             # Generate data files
             print("Generating data set for %s" % lang)
             generate_data_set(os.path.join("/home/schaetti17/config", lang + ".json"), data_set_file)
-
-            # Load data set
-            print("Load data from %s" % data_set_file)
-            with open(data_set_file, 'r') as f:
-                # Load
-                data_set = pickle.load(f)
-
-                # For each authors
-                for author in data_set['authors']:
-                    # Author's name
-                    name = author.get_name()
-
-                    # Write
-                    write_xml_output(name, lang, "canada", "male", args.output_dir)
-                # end for
-            # end with
         # end if
+
+        # Load data set
+        print("Load data from %s" % data_set_file)
+        with open(data_set_file, 'r') as f:
+            # Load
+            data_set = pickle.load(f)
+
+            # For each authors
+            for author in data_set['authors']:
+                # Author's name
+                name = author.get_name()
+
+                # Write
+                write_xml_output(name, lang, "canada", "male", args.output_dir)
+            # end for
+        # end with
     # end for
 
 # end if
