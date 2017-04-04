@@ -242,6 +242,7 @@ if __name__ == "__main__":
         if not args.no_update or not os.path.exists(os.path.join(inputs_dir, lang, "pan17" + lang + ".p")):
             # Create config file
             print("Creating configuration files for language %s..." % lang)
+            print(config_dir)
             generate_config_file(lang, args.input_dataset, config_dir)
 
             # Generate data files
