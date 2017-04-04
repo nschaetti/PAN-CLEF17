@@ -232,9 +232,9 @@ if __name__ == "__main__":
     # Directories
     base_dir = args.base_dir
     print("base dir : %s" % base_dir)
-    inputs_dir = os.path.join(base_dir, "/inputs")
-    config_dir = os.path.join(base_dir, "/config")
-    models_dir = os.path.join(base_dir, "/models")
+    inputs_dir = os.path.join(base_dir, "inputs")
+    config_dir = os.path.join(base_dir, "config")
+    models_dir = os.path.join(base_dir, "models")
 
     # For each languages
     for lang in ["en", "es", "pt", "ar"]:
