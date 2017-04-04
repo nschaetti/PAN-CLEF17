@@ -246,7 +246,12 @@ if __name__ == "__main__":
 
     # For each languages
     for lang in ["en", "es", "pt", "ar"]:
+        # Dataset file
         data_set_file = os.path.join(inputs_dir, lang, "pan17" + lang + ".p")
+
+        # Create output directory
+        os.mkdir(os.path.exists(args.output_dir, lang))
+
         # Generate cleaned data set
         if not args.no_update or not os.path.exists(os.path.join(inputs_dir, lang, "pan17" + lang + ".p")):
             # Create config file
