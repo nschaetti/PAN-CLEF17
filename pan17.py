@@ -19,8 +19,10 @@ from cleaners.PAN17ArabicTextCleaner import PAN17ArabicTextCleaner
 from cleaners.PAN17EnglishTextCleaner import PAN17EnglishTextCleaner
 from cleaners.PAN17PortugueseTextCleaner import PAN17PortugueseTextCleaner
 from cleaners.PAN17SpanishTextCleaner import PAN17SpanishTextCleaner
+from pySpeeches.importer.PySpeechesConfig import PySpeechesConfig
 from tools.PAN17TruthLoader import PAN17TruthLoader
 import xml.etree.cElementTree as ET
+import logging
 
 ###########################
 # FUNCTIONS
@@ -217,26 +219,39 @@ if __name__ == "__main__":
     parser.add_argument("--tfidf-models", type=str, default="tfidf.p", metavar='F', help="TF-IDF model filename")
     parser.add_argument("--cnn-models", type=str, default="cnn.p", metavar='C', help="CNN model filename")
     parser.add_argument("--no-update", action='store_true', default=False, help="Don't update data set if available")
+    parser.add_argument("--log-warning", action='store_true', default=False, help="Log only warnings")
+    parser.add_argument("--base-dir", type=str, default=".", metavar='B', help="Base directory")
     args = parser.parse_args()
+
+    # Load configuration file
+    config = PySpeechesConfig.Instance()
+    if args.log_warning:
+        config.set_log_level(logging.WARNING)
+    # end if
+
+    # Directories
+    base_dir = args.base_dir
+    inputs_dir = os.path.join(base_dir, "/inputs")
+    config_dir = os.path.join(base_dir, "/config")
+    models_dir = os.path.join(base_dir, "/models")
 
     # For each languages
     for lang in ["en", "es", "pt", "ar"]:
-        data_set_file = os.path.join("/home/schaetti17/inputs", lang, "pan17" + lang + ".p")
+        data_set_file = os.path.join(inputs_dir, lang, "pan17" + lang + ".p")
         # Generate cleaned data set
-        if not args.no_update or not os.path.exists(os.path.join("/home/schaetti17/inputs", lang,
-                                                                 "pan17" + lang + ".p")):
+        if not args.no_update or not os.path.exists(os.path.join(inputs_dir, lang, "pan17" + lang + ".p")):
             # Create config file
             print("Creating configuration files for language %s..." % lang)
-            generate_config_file(lang, args.input_dataset, "/home/schaetti17/config")
+            generate_config_file(lang, args.input_dataset, config_dir)
 
             # Generate data files
             print("Generating data set for %s" % lang)
-            generate_data_set(os.path.join("/home/schaetti17/config", lang + ".json"), data_set_file)
+            generate_data_set(os.path.join(config_dir, lang + ".json"), data_set_file)
         # end if
 
         # Loading models
         print("Loading models...")
-        tf_idf_model = load_model("/home/schaetti17/models", lang, args.tfidf_models)
+        tf_idf_model = load_model(models_dir, lang, args.tfidf_models)
 
         # Load data set
         print("Load data from %s" % data_set_file)
