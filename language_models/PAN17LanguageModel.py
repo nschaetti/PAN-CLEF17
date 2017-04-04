@@ -142,9 +142,6 @@ class PAN17LanguageModel(PAN17Classifier):
                 token = token.lower()
             # end if
             token_prob = self.word_probability(token)
-            """print("P : " + str(token_prob))
-            print("C : " + str(self._collection_counts[token]))
-            print("L : " + str(len(tokens)))"""
             if self._collection_counts[token] != 0:
                 for c in prob.keys():
                     if self._smoothing is not None:

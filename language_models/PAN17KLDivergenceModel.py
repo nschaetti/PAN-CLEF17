@@ -44,7 +44,13 @@ class PAN17KLDivergenceModel(PAN17Classifier):
         # end for
         self._finalized = False
         self._upper = upper
+        self._smoothing = None
     # end __init__
+
+    # Set smoothing
+    def set_smoothing(self, smoothing):
+        self._smoothing = smoothing
+    # end set_smoothing
 
     # Increment word
     def inc_word(self, c, key, n):
@@ -138,6 +144,16 @@ class PAN17KLDivergenceModel(PAN17Classifier):
         return count
     # end _compute_KL_divergence
 
+    def _kl_divergence(self, a, b):
+        """
+
+        :param a:
+        :param b:
+        :return:
+        """
+        return a * math.log(a / b)
+    # end _kl_divergence
+
     # Evaluate unseen document
     def classify(self, tokens):
         """
@@ -152,30 +168,49 @@ class PAN17KLDivergenceModel(PAN17Classifier):
         total_tokens = 0.0
         doc_probs = dict()
         for token in self._collection_counts.keys():
-            doc_probs[token] = Decimal(0.0)
+            doc_probs[token] = 0.0
         # end for
         for token in tokens:
-            doc_probs[token] = Decimal(0.0)
+            doc_probs[token] = 0.0
         # end for
 
         # For each tokens
         for token in tokens:
-            doc_probs[token] += Decimal(1.0)
+            doc_probs[token] += 0.0
             total_tokens += 1.0
         # end for
 
         # Calculate frequencies
         for token in doc_probs.keys():
-            doc_probs[token] /= Decimal(total_tokens)
+            doc_probs[token] /= total_tokens
+        # end for
+
+        # Init divergences
+        kl_divs = dict()
+        for c in self._classes_counts.keys():
+            kl_divs[c] = 0.0
         # end for
 
         # Compute KL divergence for each classes
-        kl_divs = dict()
-        for c in self._classes_counts.keys():
-            kl_divs[c] = self._compute_kl_divergence(doc_probs, self._collection_counts)
-        # end
+        # For each tokens
+        for token in tokens:
+            if not self._upper:
+                token = token.lower()
+            # end if
+            token_prob = self.word_probability(token)
+            if self._collection_counts[token] != 0:
+                for c in self._classes_counts.keys():
+                    # Class prob and doc prob for token but smoothed
+                    class_prob = self._smoothing.smooth(token_prob[c], self._collection_counts[token], len(tokens))
+                    document_prob = self._smoothing.smooth(doc_probs[c], self._collection_counts[token], len(tokens))
 
-        mini = Decimal(10000000000.0)
+                    # KL Divergence
+                    kl_divs[c] += self._kl_divergence(document_prob, class_prob)
+                # end
+            # end if
+        # end for
+
+        mini = 10000000000
         winner = ""
         # Get minimum divergence
         for c in self._classes_counts.keys():

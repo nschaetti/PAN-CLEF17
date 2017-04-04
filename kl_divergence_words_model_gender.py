@@ -10,6 +10,7 @@ import argparse
 import numpy as np
 import math
 from language_models.PAN17KLDivergenceModel import PAN17KLDivergenceModel
+from language_models.PAN17JelinekMercerSmoothing import PAN17JelinekMercerSmoothing
 from tools.PAN17Metrics import PAN17Metrics
 import cPickle as pickle
 
@@ -46,6 +47,7 @@ if __name__ == "__main__":
 
         # Probabilistic model
         language_model = PAN17KLDivergenceModel(classes=data_set['genders'], upper=False)
+        language_model.set_smoothing(PAN17JelinekMercerSmoothing(l=0.05))
 
         # K-10 fold
         author_sets = np.array(data_set['authors'])
