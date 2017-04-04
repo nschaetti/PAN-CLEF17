@@ -171,7 +171,7 @@ def generate_data_set(config_file, output_file):
     data_set['authors'] = corpus.get_authors()
 
     # Save
-    print("Saving file %s" % output_file)
+    config.info("Saving file %s" % output_file)
     with open(output_file, 'w+') as f:
         pickle.dump(data_set, f)
     # end with
@@ -231,7 +231,6 @@ if __name__ == "__main__":
 
     # Directories
     base_dir = args.base_dir
-    print("base dir : %s" % base_dir)
     inputs_dir = os.path.join(base_dir, "inputs")
     config_dir = os.path.join(base_dir, "config")
     models_dir = os.path.join(base_dir, "models")
@@ -242,21 +241,20 @@ if __name__ == "__main__":
         # Generate cleaned data set
         if not args.no_update or not os.path.exists(os.path.join(inputs_dir, lang, "pan17" + lang + ".p")):
             # Create config file
-            print("Creating configuration files for language %s..." % lang)
-            print(config_dir)
+            config.info("Creating configuration files for language %s..." % lang)
             generate_config_file(lang, args.input_dataset, config_dir)
 
             # Generate data files
-            print("Generating data set for %s" % lang)
+            config.info("Generating data set for %s" % lang)
             generate_data_set(os.path.join(config_dir, lang + ".json"), data_set_file)
         # end if
 
         # Loading models
-        print("Loading models...")
+            config.info("Loading models...")
         tf_idf_model = load_model(models_dir, lang, args.tfidf_models)
 
         # Load data set
-        print("Load data from %s" % data_set_file)
+        config.info("Load data from %s" % data_set_file)
         with open(data_set_file, 'r') as f:
             # Load
             data_set = pickle.load(f)
