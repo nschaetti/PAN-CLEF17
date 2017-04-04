@@ -250,7 +250,8 @@ if __name__ == "__main__":
         data_set_file = os.path.join(inputs_dir, lang, "pan17" + lang + ".p")
 
         # Create output directory
-        os.mkdir(os.path.join(args.output_dir, lang))
+        output_lang_dir = os.path.join(args.output_dir, lang)
+        os.mkdir(output_lang_dir)
 
         # Generate cleaned data set
         if not args.no_update or not os.path.exists(os.path.join(inputs_dir, lang, "pan17" + lang + ".p")):
@@ -282,7 +283,7 @@ if __name__ == "__main__":
                 variety = classify_variety(the_author=c_author, the_model=tf_idf_model)
 
                 # Write
-                write_xml_output(name, lang, variety, "male", args.output_dir)
+                write_xml_output(name, lang, variety, "male", output_lang_dir)
             # end for
         # end with
     # end for
