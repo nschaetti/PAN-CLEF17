@@ -220,13 +220,13 @@ if __name__ == "__main__":
     parser.add_argument("--cnn-models", type=str, default="cnn.p", metavar='C', help="CNN model filename")
     parser.add_argument("--no-update", action='store_true', default=False, help="Don't update data set if available")
     parser.add_argument("--log-warning", action='store_true', default=False, help="Log level warnings")
-    parser.add_argument("--log-info", action='store_true', default=True, help="Log level info")
     parser.add_argument("--log-error", action='store_true', default=False, help="Log level error")
     parser.add_argument("--base-dir", type=str, default=".", metavar='B', help="Base directory")
     args = parser.parse_args()
 
     # Load configuration file
     config = PySpeechesConfig.Instance()
+    config.set_log_level(logging.INFO)
 
     # Errors
     if args.log_error:
@@ -236,11 +236,6 @@ if __name__ == "__main__":
     # Warnings
     if args.log_warning:
         config.set_log_level(logging.WARNING)
-    # end if
-
-    # Infos
-    if args.log_info:
-        config.set_log_level(logging.INFO)
     # end if
 
     # Directories
