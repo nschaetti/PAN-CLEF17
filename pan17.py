@@ -223,7 +223,8 @@ if __name__ == "__main__":
     parser.add_argument("--log-error", action='store_true', default=False, help="Log level error")
     parser.add_argument("--base-dir", type=str, default=".", metavar='B', help="Base directory")
     args = parser.parse_args()
-
+    print(args)
+    exit()
     # Load configuration file
     config = PySpeechesConfig.Instance()
     config.set_log_level(logging.INFO)
