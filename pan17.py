@@ -265,7 +265,7 @@ if __name__ == "__main__":
         # end if
 
         # Loading models
-            config.info("Loading models...")
+        config.info("Loading models...")
         tf_idf_model = load_model(models_dir, lang, args.tfidf_models)
 
         # Load data set
