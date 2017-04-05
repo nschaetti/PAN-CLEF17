@@ -105,6 +105,7 @@ class PAN17FeaturesMatrixGenerator(object):
         try:
             pos = self._letters.index(letter.lower())
         except ValueError:
+            print(unicode(letter))
             print(unicode(letter.lower()))
             exit()
         # end try
