@@ -34,7 +34,7 @@ class PAN17ConvNet(nn.Module):
         super(PAN17ConvNet, self).__init__()
 
         # 2D convolution layer, 1 in channel, 10 out channels (filters), kernel size 5
-        self.conv1 = nn.Conv2d(1, 10, kernel_size=5, stride=1)
+        self.conv1 = nn.Conv2d(1, 10, kernel_size=5, stride=2)
 
         # 2D convolution layer, 10 input channels, 20 output channels (filters), kernel size 5
         self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
@@ -63,9 +63,9 @@ class PAN17ConvNet(nn.Module):
 
         # ReLU << Max pooling 2D with kernel size 2 << Dropout 2D << Convolution layer 2 << x
         x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
-        #print("x : ")
-        #print(x.size())
-        #exit()
+        print("x : ")
+        print(x.size())
+        exit()
         # Put all 320 features into 1D line << x
         x = x.view(-1, 14000)
 
