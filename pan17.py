@@ -223,8 +223,7 @@ if __name__ == "__main__":
     parser.add_argument("--log-error", action='store_true', default=False, help="Log level error")
     parser.add_argument("--base-dir", type=str, default=".", metavar='B', help="Base directory")
     args = parser.parse_args()
-    print(args)
-    exit()
+
     # Load configuration file
     config = PySpeechesConfig.Instance()
     config.set_log_level(logging.INFO)
@@ -253,7 +252,7 @@ if __name__ == "__main__":
         # Create output directory
         output_lang_dir = os.path.join(args.output_dir, lang)
         if not os.path.exists(output_lang_dir):
-            os.mkdir(output_lang_dir)
+            os.makedirs(output_lang_dir)
         # end if
 
         # Generate cleaned data set
