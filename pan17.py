@@ -262,12 +262,12 @@ if __name__ == "__main__":
             generate_config_file(lang, args.input_dataset, config_dir)
 
             # Generate data files
-            config.info("Generating data set for %s" % lang)
+            config.info("Generating data set for %s to %s" % (lang, data_set_file))
             generate_data_set(os.path.join(config_dir, lang + ".json"), data_set_file)
         # end if
 
         # Loading models
-        config.info("Loading models...")
+        config.info("Loading models from %s/%s..." % (models_dir, args.tfidf_models))
         tf_idf_model = load_model(models_dir, lang, args.tfidf_models)
 
         # Load data set
