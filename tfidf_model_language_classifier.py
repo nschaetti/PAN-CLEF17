@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
         # Word vector model
         word_vector_model = PAN17TfIdfModel(classes=data_set['languages'], upper=False, use_punct=False,
-                                             punc=ENGLISH_PUNCTUATIONS)
+                                             punc=ARABIC_PUNCTUATIONS)
 
         # K-10 fold
         author_sets = np.array(data_set['authors'])
