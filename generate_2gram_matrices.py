@@ -19,7 +19,7 @@ SPANISH_ALPHABET = u"aàáâãbcçdeéèêfghiíïîjklmnñoóôõpqrstuúüûvw
 SPANISH_PUNCTUATIONS = u"?¿.!¡,;:#$§"
 PORTUGUESE_ALPHABET = u"aàáâãbcçdeéèêfghiíïîjklmnñoóôõpqrstuúüûvwxyz"
 PORTUGUESE_PUNCTUATIONS = u"?.!,;:#$§"
-ARABIC_ALPHABET = u"‎ـﺍﺏﺒﺐﺑﺕﺖﺘﺗﺙﺚﺜﺛﺝﺞﺠﺟﺡﺢﺤﺣﺥﺨﺩﺫﺭﺯﺱﺵﺹﺽﻁﻅﻉﻍﻑﻕﻙﻝﻡﻥﻩﻭﻱءئإؤأ‎‎؎‎؏‎‎٭۞‎۩‎۝﴾﴿ﷰ‎ﷱ‎ﷲﷳ‎ﷴﷵ‎ﷷ‎ﷶ‎ﷸ‎ﷹﷺﷻ‎﷼‎بتثجحخد‎ذر‎زس‎ش‎صضطظ‎عغف‎ق‎ك‎لمن‎‎‎ه‎وي‎آ‎ة‎ى؀ال ا؛AaBbCcÇçDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZzتُهْةٍرٌلٌ"
+ARABIC_ALPHABET = u":?؟‎.!,;،؍‎‎؎‎ﺏﺒﺐﺑﺕﺖﺘﺗﺙﺚﺜﺛﺝﺞﺠﺡﺢﺤﺥﺨﺩﺫﺭﺯﺱﺵﺹﺽﻁﻅﻉﻍﻑﻕﻙﻝﻡﻥﻩﻭﻱءئإؤأـنيتثغخشصفعسمكحوهدجبا؛زطىلنقرتثذضظب"
 ARABIC_PUNCTUATIONS = u":?؟‎.!,;،؍"
 
 
@@ -52,12 +52,12 @@ if __name__ == "__main__":
         # Reducer
         reducer = PAN17LetterGramsReducer(
             letters=ENGLISH_ALPHABET,
-            punctuations=ENGLISH_PUNCTUATIONS, add_punctuation=True, add_first_letters=True, add_end_letters=True,
+            punctuations=ARABIC_PUNCTUATIONS, add_punctuation=True, add_first_letters=True, add_end_letters=True,
             add_end_grams=True, add_first_grams=True, upper_case=args.upper)
 
         # Matrix generator
-        matrix_generator = PAN17FeaturesMatrixGenerator(letters=ENGLISH_ALPHABET,
-                                              punctuations=ENGLISH_PUNCTUATIONS, upper_case=args.upper)
+        matrix_generator = PAN17FeaturesMatrixGenerator(letters=ARABIC_ALPHABET,
+                                              punctuations=ARABIC_PUNCTUATIONS, upper_case=args.upper)
 
         # For each author
         for author in data_set['corpus'].get_authors():
