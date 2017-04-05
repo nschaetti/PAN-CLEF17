@@ -89,11 +89,11 @@ def generate_config_file(l, input_dir, config_dir):
 
 
 # Generate data set
-def generate_data_set(config_file, output_file):
+def generate_data_set(config_file):
 
     # Load configuration file
-    config = ps.importer.PySpeechesConfig.Instance()
-    config.load(config_file)
+    c_config = ps.importer.PySpeechesConfig.Instance()
+    c_config.load(config_file)
 
     # New corpus
     corpus = ps.dataset.PySpeechesCorpus("PAN17 Author Profiling data set")
@@ -101,81 +101,17 @@ def generate_data_set(config_file, output_file):
     # Set config
     config.set_corpus(corpus)
 
-    # Final data set
-    data_set = dict()
-
-    # Data set informations
-    data_set['languages'] = []
-    data_set['genders'] = []
-
     # Import each sources
-    for source in config.get_sources():
-        # Get authors
-        truths = PAN17TruthLoader.load_truth_file(source.get_entry_point() + "/truth.txt")
-
-        # Create collections
-        for author_id, gender, language in truths:
-            if gender not in data_set:
-                data_set[gender] = ps.dataset.PySpeechesDocumentCollection(gender)
-            # end if
-            if language not in data_set:
-                data_set[language] = ps.dataset.PySpeechesDocumentCollection(language)
-            # end if
-            if "authors_" + gender not in data_set:
-                data_set["authors_" + gender] = []
-            # end if
-            if "authors_" + language not in data_set:
-                data_set["authors_" + language] = []
-            # end if
-            if gender not in data_set['genders']:
-                data_set['genders'] += [gender]
-            # end if
-            if language not in data_set['languages']:
-                data_set['languages'] += [language]
-                # end if
-        # end for
-
+    for source in c_config.get_sources():
         # Directory importer
         importer = ps.importer.PySpeechesDirectoryImporter(source, eval(source.get_text_cleaner()),
                                                            ps.importer.PySpeechesXMLFileImporter)
 
         # Import source
         importer.import_source()
-
-        # For each authors
-        for author_id, gender, language in truths:
-            # Get author object
-            author = corpus.get_author(author_id)
-            # Set gender
-            author.set_property("gender", gender)
-            # Set language
-            author.set_property("language", language)
-        # end for
     # end for
 
-    # For each author
-    for author in corpus.get_authors():
-        gender = author.get_property("gender")
-        language = author.get_property("language")
-        for doc in author.get_documents():
-            # print("Adding document %s to %s and %s" % (doc.get_title(), gender, language))
-            data_set[gender].add_document(doc, check_doublon=False)
-            data_set[language].add_document(doc, check_doublon=False)
-        # end for
-        data_set["authors_" + gender] += [author]
-        data_set["authors_" + language] += [author]
-    # end for
-
-    # Corpus
-    data_set['corpus'] = corpus
-    data_set['authors'] = corpus.get_authors()
-
-    # Save
-    config.info("Saving file %s" % output_file)
-    with open(output_file, 'w+') as f:
-        pickle.dump(data_set, f)
-    # end with
-
+    return corpus.get_authors()
 # end generate_data_set
 
 
@@ -218,7 +154,6 @@ if __name__ == "__main__":
     parser.add_argument("--token", type=str, default="", metavar='T', help="Token", required=True)
     parser.add_argument("--tfidf-models", type=str, default="tfidf.p", metavar='F', help="TF-IDF model filename")
     parser.add_argument("--cnn-models", type=str, default="cnn.p", metavar='C', help="CNN model filename")
-    parser.add_argument("--no-update", action='store_true', default=False, help="Don't update data set if available")
     parser.add_argument("--log-warning", action='store_true', default=False, help="Log level warnings")
     parser.add_argument("--log-error", action='store_true', default=False, help="Log level error")
     parser.add_argument("--base-dir", type=str, default=".", metavar='B', help="Base directory")
@@ -246,48 +181,35 @@ if __name__ == "__main__":
 
     # For each languages
     for lang in ["en", "es", "pt", "ar"]:
-        # Dataset file
-        data_set_file = os.path.join(inputs_dir, lang, "pan17" + lang + ".p")
-
         # Create output directory
         output_lang_dir = os.path.join(args.output_dir, lang)
         if not os.path.exists(output_lang_dir):
             os.makedirs(output_lang_dir)
         # end if
 
-        # Generate cleaned data set
-        if not args.no_update or not os.path.exists(os.path.join(inputs_dir, lang, "pan17" + lang + ".p")):
-            # Create config file
-            config.info("Creating configuration files for language %s..." % lang)
-            generate_config_file(lang, args.input_dataset, config_dir)
+        # Create config file
+        config.info("Creating configuration files for language %s..." % lang)
+        generate_config_file(lang, args.input_dataset, config_dir)
 
-            # Generate data files
-            config.info("Generating data set for %s to %s" % (lang, data_set_file))
-            generate_data_set(os.path.join(config_dir, lang + ".json"), data_set_file)
-        # end if
+        # Generate data files
+        config.info("Generating data set for %s" % lang)
+        data_set = generate_data_set(os.path.join(config_dir, lang + ".json"))
 
         # Loading models
         config.info("Loading models from %s/%s..." % (models_dir, args.tfidf_models))
         tf_idf_model = load_model(models_dir, lang, args.tfidf_models)
 
-        # Load data set
-        config.info("Load data from %s" % data_set_file)
-        with open(data_set_file, 'r') as f:
-            # Load
-            data_set = pickle.load(f)
+        # For each authors
+        for c_author in data_set:
+            # Author's name
+            name = c_author.get_name()
 
-            # For each authors
-            for c_author in data_set['authors']:
-                # Author's name
-                name = c_author.get_name()
+            # Classification
+            variety = classify_variety(the_author=c_author, the_model=tf_idf_model)
 
-                # Classification
-                variety = classify_variety(the_author=c_author, the_model=tf_idf_model)
-
-                # Write
-                write_xml_output(name, lang, variety, "male", output_lang_dir)
-            # end for
-        # end with
+            # Write
+            write_xml_output(name, lang, variety, "male", output_lang_dir)
+        # end for
     # end for
 
 # end if
