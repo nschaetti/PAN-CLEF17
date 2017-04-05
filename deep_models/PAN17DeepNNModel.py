@@ -47,7 +47,7 @@ class PAN17DeepNNModel(PAN17Classifier):
         self._cuda = cuda
         if cuda:
             self._model.cuda()
-        self._model.double()
+        #self._model.double()
         torch.manual_seed(seed)
         if cuda:
             torch.cuda.manual_seed(seed)
