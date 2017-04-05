@@ -251,7 +251,9 @@ if __name__ == "__main__":
 
         # Create output directory
         output_lang_dir = os.path.join(args.output_dir, lang)
-        os.mkdir(output_lang_dir)
+        if not os.path.exists(output_lang_dir):
+            os.mkdir(output_lang_dir)
+        # end if
 
         # Generate cleaned data set
         if not args.no_update or not os.path.exists(os.path.join(inputs_dir, lang, "pan17" + lang + ".p")):
