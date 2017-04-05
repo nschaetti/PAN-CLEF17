@@ -66,6 +66,7 @@ class PAN17ConvNet(nn.Module):
         print("x : ")
         print(x.size())
         exit()
+
         # Put all 320 features into 1D line << x
         x = x.view(-1, 14000)
 
