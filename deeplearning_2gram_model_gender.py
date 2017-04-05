@@ -59,7 +59,7 @@ if __name__ == "__main__":
                                                seed=args.seed)
 
         # K-10 fold
-        print(data_set['2grams'][0].shape)
+        #print(data_set['2grams'][0].shape)
         grams_set = np.array(data_set['2grams'])
         m_height = grams_set.shape[1]
         m_width = grams_set.shape[2]
