@@ -67,7 +67,7 @@ class PAN17ConvNet(nn.Module):
         #print(x.size())
         #exit()
         # Put all 320 features into 1D line << x
-        x = x.view(-1, 2898)
+        x = x.view(-1, 28980)
 
         # ReLU << Linear model on 4800 features to 50 outputs << x
         x = F.relu(self.fc1(x))
