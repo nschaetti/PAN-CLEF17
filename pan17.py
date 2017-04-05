@@ -30,7 +30,7 @@ import logging
 
 
 def write_xml_output(ids, lng, variety, gender, output_dir):
-    #print("Writing %s" % os.path.join(output_dir, ids + ".xml"))
+    config.info("Writing %s" % os.path.join(output_dir, ids + ".xml"))
     root = ET.Element("author", id=ids, lang=lng, variety=variety, gender=gender)
     tree = ET.ElementTree(root)
     tree.write(os.path.join(output_dir, ids + ".xml"))
