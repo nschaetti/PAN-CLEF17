@@ -65,7 +65,7 @@ class PAN17ConvNet(nn.Module):
         x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
         #print("x : ")
         #print(x.size())
-        3exit()
+        #exit()
         # Put all 320 features into 1D line << x
         x = x.view(-1, 2898)
 
