@@ -202,7 +202,7 @@ class PAN17KLDivergenceModel(PAN17Classifier):
                 for c in self._classes_counts.keys():
                     # Class prob and doc prob for token but smoothed
                     class_prob = self._smoothing.smooth(token_prob[c], self._collection_counts[token], len(tokens))
-                    document_prob = self._smoothing.smooth(doc_probs[c], self._collection_counts[token], len(tokens))
+                    document_prob = self._smoothing.smooth(doc_probs[token], self._collection_counts[token], len(tokens))
 
                     # KL Divergence
                     kl_divs[c] += self._kl_divergence(document_prob, class_prob)
@@ -219,7 +219,7 @@ class PAN17KLDivergenceModel(PAN17Classifier):
                 winner = c
             # end if
         # end for
-        print(winner)
+        #print(winner)
         return winner
     # end evaluate_doc
 
