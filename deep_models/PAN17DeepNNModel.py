@@ -56,6 +56,25 @@ class PAN17DeepNNModel(PAN17Classifier):
         self._kwargs = {'num_workers': 1, 'pin_memory': True} if self._cuda else {}
     # end __init__
 
+    # Save the model
+    def save(self, path):
+        """
+        Save the model
+        :param path: Path to the model
+        """
+        torch.save(self._model.state_dict(), path)
+    # end save
+
+    # Load a model
+    @staticmethod
+    def load(path):
+        """
+        Load a model
+        :param path: Load a model.
+        """
+        return torch.load(path=path)
+    # end path
+
     # Class to int
     def _class_to_int(self, c):
         """
@@ -156,8 +175,9 @@ class PAN17DeepNNModel(PAN17Classifier):
         training_loss = training_loss
         training_loss /= len(train_loader)
 
-        # Print
+        # Print & return
         print("Iteration {}: Training Loss: {:.4f}".format(epoch, training_loss))
+        return training_loss
     # end train
 
     # Evaluate unseen document
@@ -202,11 +222,12 @@ class PAN17DeepNNModel(PAN17Classifier):
         test_loss = test_loss
         test_loss /= len(test_loader)
 
-        # Print informations
+        # Print informations & return
         print("Iteration {}: Average test loss: {:.4f}, Accuracy: {}/{} ({:.2f}%)".format(
             epoch, test_loss, correct, len(test_loader.dataset),
             100.0 * float(correct) / float(len(test_loader.dataset))
         ))
+        return 100.0 * float(correct) / float(len(test_loader.dataset))
     # end evaluate_doc
 
 # end PAN17ProbabilisticModel
