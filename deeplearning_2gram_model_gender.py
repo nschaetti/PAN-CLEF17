@@ -34,6 +34,7 @@ if __name__ == "__main__":
     parser.add_argument("--log-interval", type=int, default=10, metavar='N',
                         help="How many batches to wait before logging training status (default: 10)")
     parser.add_argument("--index", type=int, default=-1, metavar='I', help="Test set index (default:-1)")
+    parser.add_argument("--output", type=str, default="./model.p", metavar='M', help="Output file to store the CNN model")
     args = parser.parse_args()
     args.cuda = not args.no_cuda and torch.cuda.is_available()
 
@@ -82,8 +83,12 @@ if __name__ == "__main__":
 
         # Train with each document
         print("Assessing CNN model...")
+        maxi = 101
         for epoch in range(1, args.epoch+1):
             deep_learning_model.train(epoch, tr_data_set, batch_size=args.batch_size)
-            deep_learning_model.test(epoch, te_data_set, batch_size=args.batch_size)
+            test_error = deep_learning_model.test(epoch, te_data_set, batch_size=args.batch_size)
+            if test_error < maxi:
+                maxi = test_error
+                deep_learning_model.save(args.output)
         # end for
 # end if
