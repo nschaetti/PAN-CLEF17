@@ -28,7 +28,6 @@ from pySpeeches.importer.PySpeechesConfig import PySpeechesConfig
 from tools.PAN17TruthLoader import PAN17TruthLoader
 import xml.etree.cElementTree as ET
 import logging
-import matplotlib.pyplot as plt
 
 
 # ALPHABETS
