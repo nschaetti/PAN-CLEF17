@@ -13,6 +13,7 @@ from deep_models.PAN17ConvNet import PAN17ConvNet
 from deep_models.PAN17DeepNNModel import PAN17DeepNNModel
 import cPickle as pickle
 import torch
+import matplotlib.pyplot as plt
 
 
 ###########################
@@ -82,12 +83,14 @@ if __name__ == "__main__":
 
         # Train with each document
         print("Assessing CNN model...")
-        maxi = 101
+        mini = 0
         for epoch in range(1, args.epoch+1):
             deep_learning_model.train(epoch, tr_data_set, batch_size=args.batch_size)
-            test_error = deep_learning_model.test(epoch, te_data_set, batch_size=args.batch_size)
-            if test_error < maxi:
-                maxi = test_error
+            success_rate = deep_learning_model.test(epoch, te_data_set, batch_size=args.batch_size)
+            if success_rate > mini:
+                print("Saving model to %s" % args.output)
+                mini = success_rate
                 deep_learning_model.save(args.output)
+            # end if
         # end for
 # end if

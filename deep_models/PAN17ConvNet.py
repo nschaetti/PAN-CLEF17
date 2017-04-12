@@ -43,10 +43,10 @@ class PAN17ConvNet(nn.Module):
         self.conv2_drop = nn.Dropout2d()
 
         # Linear transformation with 4800 inputs features and 50 output features
-        self.fc1 = nn.Linear(28980, 2898)
+        self.fc1 = nn.Linear(28980, 1500)
 
         # Linear transformation with 50 inputs features and 2 output features
-        self.fc2 = nn.Linear(2898, n_classes)
+        self.fc2 = nn.Linear(1500, n_classes)
     # end __init__
 
     # Forward
@@ -63,11 +63,10 @@ class PAN17ConvNet(nn.Module):
 
         # ReLU << Max pooling 2D with kernel size 2 << Dropout 2D << Convolution layer 2 << x
         x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
-        #print("x : ")
-        #print(x.size())
+        #print(PAN17ConvNet.num_flat_features(x))
         #exit()
         # Put all 320 features into 1D line << x
-        x = x.view(-1, 28980)
+        x = x.view(-1, PAN17ConvNet.num_flat_features(x))
 
         # ReLU << Linear model on 4800 features to 50 outputs << x
         x = F.relu(self.fc1(x))
@@ -81,5 +80,15 @@ class PAN17ConvNet(nn.Module):
         # Softmax layer << x
         return F.log_softmax(x)
     # end forward
+
+    # Number of flat features
+    @staticmethod
+    def num_flat_features(x):
+        size = x.size()[1:]  # all dimensions except the batch dimension
+        num_features = 1
+        for s in size:
+            num_features *= s
+        return num_features
+    # end num_flat_features
 
 # end PAN17ConvNet

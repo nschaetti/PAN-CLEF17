@@ -29,6 +29,8 @@ from torchvision import datasets, transforms
 from torch.autograd import Variable
 from tools.PAN17Classifier import PAN17Classifier
 from PAN17ConvNet import PAN17ConvNet
+import pickle
+#import torch.utils.serialization as ts
 
 
 class PAN17DeepNNModel(PAN17Classifier):
@@ -62,7 +64,7 @@ class PAN17DeepNNModel(PAN17Classifier):
         Save the model
         :param path: Path to the model
         """
-        torch.save(self._model.state_dict(), path)
+        torch.save(self._model, path)
     # end save
 
     # Load a model
@@ -72,7 +74,7 @@ class PAN17DeepNNModel(PAN17Classifier):
         Load a model
         :param path: Load a model.
         """
-        return torch.load(path=path)
+        return torch.load(path)
     # end path
 
     # Class to int
@@ -96,8 +98,10 @@ class PAN17DeepNNModel(PAN17Classifier):
     # end _int_to_class
 
     # Numpy matrix to Tensor
-    def matrix_to_tensor(self, m):
-        #m = m.toarray()
+    def matrix_to_tensor(self, m, to_array=False):
+        if to_array:
+            m = m.toarray()
+        # end if
         h = int(m.shape[0])
         w = int(m.shape[1])
         x = torch.DoubleTensor(1, h, w)
@@ -211,7 +215,7 @@ class PAN17DeepNNModel(PAN17Classifier):
             # Loss
             test_loss += F.nll_loss(output, target).data[0]
 
-            # Get the index if the max log-probability
+            # Get the index of the max log-probability
             pred = output.data.max(1)[1]
 
             # Add if correct
@@ -229,5 +233,12 @@ class PAN17DeepNNModel(PAN17Classifier):
         ))
         return 100.0 * float(correct) / float(len(test_loader.dataset))
     # end evaluate_doc
+
+    def predict(self, data):
+        data = Variable(data)
+        output = self._model(data)
+        pred = output.data.max(1)[1].numpy()[0, 0]
+        return self._int_to_class(pred)
+    # end predict
 
 # end PAN17ProbabilisticModel

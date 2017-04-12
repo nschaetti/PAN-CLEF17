@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
         # Reducer
         reducer = PAN17LetterGramsReducer(
-            letters=ENGLISH_ALPHABET,
+            letters=ARABIC_ALPHABET,
             punctuations=ARABIC_PUNCTUATIONS, add_punctuation=True, add_first_letters=True, add_end_letters=True,
             add_end_grams=True, add_first_grams=True, upper_case=args.upper)
 
