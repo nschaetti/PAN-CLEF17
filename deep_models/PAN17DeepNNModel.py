@@ -33,6 +33,7 @@ import pickle
 #import torch.utils.serialization as ts
 
 
+
 class PAN17DeepNNModel(PAN17Classifier):
 
     # Constructor

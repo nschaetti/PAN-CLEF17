@@ -24,6 +24,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
+
 class PAN17ConvNet(nn.Module):
 
     # Constructor

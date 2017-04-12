@@ -105,4 +105,3 @@ if __name__ == "__main__":
     print("Average variety success rate : %f" % np.average(variety_success_rates))
     print("Average global success rate : %f" % np.average(global_success_rates))
 # end if
-
