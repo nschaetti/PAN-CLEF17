@@ -40,6 +40,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
     args.cuda = not args.no_cuda and torch.cuda.is_available()
 
+    # Lang params
+    params = dict()
+    params['en'] = (4800, 400)
+    params['es'] = (4800, 400)
+    params['pt'] = (4800, 400)
+    params['ar'] = (28980, 2898)
+
     # Load data set
     with open(args.file, 'r') as f:
         # Load
@@ -57,9 +64,9 @@ if __name__ == "__main__":
         # end for
 
         # Deep-Learning model
-        deep_learning_model = PAN17DeepNNModel(PAN17ConvNet(n_classes=2), classes=("male", "female"), cuda=args.cuda,
-                                               lr=args.lr, momentum=args.momentum, log_interval=args.log_interval,
-                                               seed=args.seed)
+        deep_learning_model = PAN17DeepNNModel(PAN17ConvNet(n_classes=2, params=params[args.lang]), classes=("male", "female"),
+                                               cuda=args.cuda, lr=args.lr, momentum=args.momentum,
+                                               log_interval=args.log_interval, seed=args.seed)
 
         # K-10 fold
         grams_set = np.array(data_set['2grams'])

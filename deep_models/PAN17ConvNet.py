@@ -28,7 +28,7 @@ import torch.nn.functional as F
 class PAN17ConvNet(nn.Module):
 
     # Constructor
-    def __init__(self, n_classes=2, params=[4800, 400]):
+    def __init__(self, n_classes=2, params=(4800, 400)):
         """
         Constructor
         """
