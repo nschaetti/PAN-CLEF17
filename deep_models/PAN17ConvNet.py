@@ -28,7 +28,7 @@ import torch.nn.functional as F
 class PAN17ConvNet(nn.Module):
 
     # Constructor
-    def __init__(self, n_classes=2):
+    def __init__(self, n_classes=2, params=[4800, 400]):
         """
         Constructor
         """
@@ -44,10 +44,10 @@ class PAN17ConvNet(nn.Module):
         self.conv2_drop = nn.Dropout2d()
 
         # Linear transformation with 4800 inputs features and 50 output features
-        self.fc1 = nn.Linear(28980, 1500)
+        self.fc1 = nn.Linear(params[0], params[1])
 
         # Linear transformation with 50 inputs features and 2 output features
-        self.fc2 = nn.Linear(1500, n_classes)
+        self.fc2 = nn.Linear(params[1], n_classes)
     # end __init__
 
     # Forward

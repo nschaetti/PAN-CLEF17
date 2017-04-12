@@ -36,6 +36,7 @@ if __name__ == "__main__":
                         help="How many batches to wait before logging training status (default: 10)")
     parser.add_argument("--index", type=int, default=-1, metavar='I', help="Test set index (default:-1)")
     parser.add_argument("--output", type=str, default="./model.p", metavar='M', help="Output file to store the CNN model")
+    parser.add_argument("--lang", type=str, help="Corpus language (ar, en, es, pt)")
     args = parser.parse_args()
     args.cuda = not args.no_cuda and torch.cuda.is_available()
 
