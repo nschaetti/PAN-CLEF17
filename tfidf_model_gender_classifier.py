@@ -43,10 +43,6 @@ if __name__ == "__main__":
         n_samples = len(data_set['authors'])
         fold_size = int(math.ceil(n_samples / 10.0))
 
-        # Word vector model
-        word_vector_model = PAN17TfIdfModel(classes=data_set['genders'], upper=False, use_punct=False,
-                                             punc=ENGLISH_PUNCTUATIONS)
-
         # K-10 fold
         author_sets = np.array(data_set['authors'])
         author_sets.shape = (10, fold_size)
@@ -55,18 +51,31 @@ if __name__ == "__main__":
         error_rate_average = np.array([])
         for i in range(10):
 
+            # Word vector model
+            word_vector_model = PAN17TfIdfModel(classes=data_set['genders'], upper=False, use_punct=False,
+                                                punc=ENGLISH_PUNCTUATIONS)
+
             # Initialize
             #print("Initializing word vector model...")
-            for doc in data_set['corpus'].get_documents():
+            """for doc in data_set['corpus'].get_documents():
                 for token in doc.get_tokens():
                     word_vector_model.init_token_count(token)
                 # end for
-            # end for
+            # end for"""
 
             # Select training and test sets
             test = author_sets[i]
             training = np.delete(author_sets, i, axis=0)
             training.shape = (fold_size * 9)
+
+            for author in training:
+                # For each doc
+                for doc in author.get_documents():
+                    for token in doc.get_tokens():
+                        word_vector_model.init_token_count(token)
+                    # end for
+                # end for
+            # end for
 
             # Train with each document
             #print("Training word vector model...")
@@ -100,6 +109,11 @@ if __name__ == "__main__":
             error_rate = PAN17Metrics.error_rate(word_vector_model, docs_token, truths) * 100.0
             print("Error rate : %f %%" % error_rate)
             error_rate_average = np.append(error_rate_average, error_rate)
+
+            # Delete model
+            if i < 9:
+                del word_vector_model
+            # end if
         # end for
         print("10K Fold error rate is %f" % np.average(error_rate_average))
     # end with
