@@ -151,8 +151,12 @@ class PAN17TfIdfModel(PAN17Classifier):
         for token in tokens:
             token = self._filter_token(token)
             if token is not None:
-                index = self._token_position[token]
-                d_vector[index] += 1.0
+                try:
+                    index = self._token_position[token]
+                    d_vector[index] += 1.0
+                except KeyError:
+                    pass
+                # end try
             # end if
         # end for
 
