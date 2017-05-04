@@ -232,7 +232,7 @@ class PAN17DeepNNModel(PAN17Classifier):
             epoch, test_loss, correct, len(test_loader.dataset),
             100.0 * float(correct) / float(len(test_loader.dataset))
         ))
-        return 100.0 * float(correct) / float(len(test_loader.dataset))
+        return 100.0 * float(correct) / float(len(test_loader.dataset)), test_loss
     # end evaluate_doc
 
     def predict(self, data):

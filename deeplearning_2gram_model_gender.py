@@ -92,12 +92,13 @@ if __name__ == "__main__":
         # Train with each document
         print("Assessing CNN model...")
         mini = 0
+        maxi = 10000000
         for epoch in range(1, args.epoch+1):
             deep_learning_model.train(epoch, tr_data_set, batch_size=args.batch_size)
-            success_rate = deep_learning_model.test(epoch, te_data_set, batch_size=args.batch_size)
-            if success_rate > mini:
+            success_rate, test_loss = deep_learning_model.test(epoch, te_data_set, batch_size=args.batch_size)
+            if test_loss > maxi:
                 print("Saving model to %s" % args.output)
-                mini = success_rate
+                maxi = test_loss
                 deep_learning_model.save(args.output)
             # end if
         # end for
