@@ -35,7 +35,6 @@ if __name__ == "__main__":
     parser.add_argument("--log-interval", type=int, default=10, metavar='N',
                         help="How many batches to wait before logging training status (default: 10)")
     parser.add_argument("--index", type=int, default=-1, metavar='I', help="Test set index (default:-1)")
-    parser.add_argument("--output", type=str, default="./model.p", metavar='M', help="Output file to store the CNN model")
     parser.add_argument("--lang", type=str, help="Corpus language (ar, en, es, pt)")
     parser.add_argument("--k", type=int, default=10, metavar='K', help="k-Fold Cross Validation")
     args = parser.parse_args()
