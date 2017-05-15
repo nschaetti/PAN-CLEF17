@@ -64,6 +64,7 @@ if __name__ == "__main__":
         # end for
 
         minis = np.zeros(args.k)
+        success_rates = np.zeros((args.epoch, args.k))
 
         for k in range(args.k):
             print("%d th fold" % k)
@@ -101,15 +102,19 @@ if __name__ == "__main__":
                 if success_rate > mini:
                     mini = success_rate
                 # end if
+                success_rates[epoch-1, k] = success_rate
             # end for
 
-            print(mini)
+            print("Best success rate of %d fold : %f" % (k, mini))
             minis[k] = mini
 
             del deep_learning_model
         # end for
 
-        print("Error rate : " + str(np.array(minis)))
+        print("Error rates : " + str(np.array(success_rates)))
+        print("K-Fold error rates : " + str(np.average(success_rates, axis=1)))
+        print("Best success rate : " + str(np.max(np.average(success_rates, axis=1))))
+        print("Best iteration : " + str(np.argmax(np.average(success_rates, axis=1))))
 
     # end with
 # end if
