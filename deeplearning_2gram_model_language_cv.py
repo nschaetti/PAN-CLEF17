@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
     # Lang params
     params = dict()
-    params['en'] = (4800, 400, ['great britain', 'canada', 'ireland', 'new zealand', 'australia'])
+    params['en'] = (4800, 400, ['great britain', 'canada', 'ireland', 'new zealand', 'australia', 'united states'])
     params['es'] = (4800, 400, ['colombia', 'argentina', 'spain', 'venezuela', 'peru', 'chile', 'mexico'])
     params['pt'] = (4800, 400, ['portugal', 'brazil'])
     params['ar'] = (28980, 2898, ['gulf', 'levantine', 'maghrebi', 'egypt'])
