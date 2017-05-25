@@ -181,7 +181,7 @@ class PAN17DeepNNModel(PAN17Classifier):
         training_loss /= len(train_loader)
 
         # Print & return
-        #print("Iteration {}: Training Loss: {:.4f}".format(epoch, training_loss))
+        print("Iteration {}: Training Loss: {:.4f}".format(epoch, training_loss))
         return training_loss
     # end train
 
@@ -232,7 +232,7 @@ class PAN17DeepNNModel(PAN17Classifier):
             epoch, test_loss, correct, len(test_loader.dataset),
             100.0 * float(correct) / float(len(test_loader.dataset))
         ))"""
-
+        print("Iteration {}: Test Loss: {:.4f}".format(epoch, test_loss))
         return 100.0 * float(correct) / float(len(test_loader.dataset)), test_loss
     # end evaluate_doc
 

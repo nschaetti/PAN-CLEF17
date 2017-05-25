@@ -70,10 +70,10 @@ if __name__ == "__main__":
             print("%d th fold" % k)
 
             # Deep-Learning model
-            deep_learning_model = PAN17DeepNNModel(PAN17ConvNet(n_classes=len(params[args.lang][2])),
-                                                   classes=params[args.lang][2], cuda=args.cuda, lr=args.lr,
-                                                   momentum=args.momentum, log_interval=args.log_interval,
-                                                   seed=args.seed)
+            deep_learning_model = PAN17DeepNNModel(PAN17ConvNet(n_classes=len(params[args.lang][2]), params=(params[args.lang][0],
+                                                params[args.lang][1])), classes=params[args.lang][2], cuda=args.cuda, lr=args.lr,
+                                                momentum=args.momentum, log_interval=args.log_interval,
+                                                seed=args.seed)
 
             # K-10 fold
             grams_set = np.array(data_set['2grams'])
@@ -101,10 +101,10 @@ if __name__ == "__main__":
                 print(epoch)
                 deep_learning_model.train(epoch, tr_data_set, batch_size=args.batch_size)
                 success_rate, test_loss = deep_learning_model.test(epoch, te_data_set, batch_size=args.batch_size)
+                print(success_rate)
                 if success_rate > mini:
                     mini = success_rate
                 # end if
-                print(success_rate)
                 success_rates[epoch-1, k] = success_rate
             # end for
 
